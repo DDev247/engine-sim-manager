@@ -7,7 +7,7 @@ import PopupManager from './components/PopupManager/PopupManager';
 
 function App() {
     const [tutorialDone, setTutorialDone] = useState(false);
-    const [latestVersion, setLatestVersion] = useState(0.1);
+    const [latestVersion, setLatestVersion] = useState(0);
     const [outdated, setOutdated] = useState(false);
     const currentVersion = 0.1;
 
@@ -22,23 +22,31 @@ function App() {
             localStorage.setItem("tutorialDone", `{ "done": false }`);
             done = JSON.parse(localStorage.getItem("tutorialDone"));
         }
+
+        fetch("https://raw.githubusercontent.com/DDev247/engine-sim-manager/master/latest").then((data) => {
+            data.text().then((text) => {
+                if(data.ok) {
+                    setLatestVersion(Number.parseFloat(text));
+                }
+            });
+        });
         
         setTutorialDone(done['done']);
 
         // get version
         if(currentVersion < latestVersion) {
-            document.title = "Engine Simulator Manager beta v" + currentVersion + " - OUTDATED";
+            document.title = "Engine Simulator Manager v" + currentVersion + " - OUTDATED";
             setOutdated(true);
         }
         else {
-            document.title = "Engine Simulator Manager beta v" + currentVersion;
+            document.title = "Engine Simulator Manager v" + currentVersion;
         }
     }, []);
 
     if(tutorialDone) {
         return (
             <div className="app">
-                <Home/>
+                <Home latestVersion={latestVersion} currentVersion={currentVersion} outdated={outdated}/>
                 <PopupManager outdated={outdated}/>
             </div>
         );
@@ -46,7 +54,7 @@ function App() {
     else {
         return (
             <div className="app">
-                <Tutorial setTutorialDone={setTutorial}/>
+                <Tutorial currentVersion={currentVersion} latestVersion={latestVersion} outdated={outdated} setTutorialDone={setTutorial}/>
                 <PopupManager outdated={outdated}/>
             </div>
         );

@@ -278,6 +278,16 @@ function Home(props) {
         }
     }
 
+    let text = (
+        <pre className="versionHome">Engine Simulator Manager v{props.currentVersion} - latest</pre>
+    );
+
+    if(props.outdated) {
+        text = (
+            <pre className="versionHome">Engine Simulator Manager v{props.currentVersion} - outdated - v{props.latestVersion}</pre>
+        );
+    }
+
     switch (page) {
         case "viewEngine":
             content = (
@@ -308,6 +318,7 @@ function Home(props) {
                         <h3>Engine Simulator Catalog <a target="_blank" href="https://catalog.engine-sim.parts/user/api-tokens">API Token</a></h3>
                         <input onChange={inputData} id="apiToken" title="API Token" defaultValue={token}></input>
                     </div>
+                    {text}
                 </div>
             );
             break;

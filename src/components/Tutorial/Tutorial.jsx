@@ -80,6 +80,16 @@ function Tutorial(props) {
         </div>
     );
 
+    let text = (
+        <pre className="version">Engine Simulator Manager v{props.currentVersion} - latest</pre>
+    );
+
+    if(props.outdated) {
+        text = (
+            <pre className="version">Engine Simulator Manager v{props.currentVersion} - outdated - v{props.latestVersion}</pre>
+        );
+    }
+
     return(
         <div className="tutorial">
             {page}
@@ -87,6 +97,7 @@ function Tutorial(props) {
                 {bullets}
                 {button}
             </div>
+            {text}
         </div>
     );
 }
