@@ -25,7 +25,7 @@ function ViewEngine(props) {
 
     const downloadPart = (e) => {
         const username = engineData.short_user.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const name = "es/newest/assets/engines/" + username + "/" + engineData.script_name;
+        const name = "es/latest/assets/engines/" + username + "/" + engineData.script_name;
         fetch("http://127.0.0.1:24704/savePart?name=" + name + "&id=" + engineData.id).then((response) => {
             response.text().then((data) => {
                 console.log("Recieved: " + data);
@@ -46,7 +46,7 @@ function ViewEngine(props) {
 
     const usePart = (e) => {
         downloadPart(e);
-        const name2 = "es/newest/assets/main.mr";
+        const name2 = "es/latest/assets/main.mr";
         fetch("http://127.0.0.1:24704/saveFile?name=" + name2 + "&data=" + btoa(engineData.main_mr)).then((response) => {
             response.text().then((data) => {
                 console.log("Recieved: " + data);
@@ -69,7 +69,7 @@ function ViewEngine(props) {
 
     const deletePart = (e) => {
         const username = engineData.short_user.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const name = "es/newest/assets/engines/" + username + "/" + engineData.script_name;
+        const name = "es/latest/assets/engines/" + username + "/" + engineData.script_name;
         
         let json = JSON.parse(props.downloadedPartsList);
         if(json.list.find(e => e.id === engineData.id)) {
