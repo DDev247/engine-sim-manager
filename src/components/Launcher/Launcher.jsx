@@ -7,6 +7,44 @@ import es_logo from "../../es_logo.png";
 function Launcher(props) {
     const [simVersion, setSimVersion] = useState("v0.1.11a");
     const [main_mr, setMain_mr] = useState();
+    const [userEngines, setUserEngines] = useState(undefined);
+
+    const fetchUserEngines = () => {
+        let myEngineList = {};
+
+        fetch("http://127.0.0.1:24704/getFolder?name=es/latest/assets/engines").then((response) => {
+            if(response.status === 200) {
+                response.text().then((text) => {
+                    let json = JSON.parse(text);
+                    json.forEach(element => {
+                        let myMan = [];
+                        fetch("http://127.0.0.1:24704/getFolder?name=es/latest/assets/engines/" + element).then((response) => {
+                            if(response.status === 200) {
+                                response.text().then((text2) => {
+                                    let json2 = JSON.parse(text2);
+                                    json2.forEach(element2 => {
+                                        if(element2.endsWith(".mr")) {
+                                            // console.log("Found engine: '" + element2 + "' in 'es/latest/assets/engines" + element + "'.");
+                                            myMan.push(element2);
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                        myEngineList[element] = myMan;
+                    });
+                });
+            }
+        });
+
+        //console.log("User engines:");
+        //console.log(myEngineList);
+        setUserEngines(myEngineList);
+    }
+
+    useEffect(() => {
+        fetchUserEngines();
+    }, []);
 
     useEffect(() => {
         fetch("http://127.0.0.1:24704/getFile?name=es/version.txt").then((response) => {
@@ -124,6 +162,7 @@ function Launcher(props) {
             });
             return null;
         });
+        fetchUserEngines();
     }
 
     if(props.launchInstant) {
@@ -136,6 +175,50 @@ function Launcher(props) {
             // launch ES
             launchES(undefined);
         }
+    }
+
+    let userPartsMap = [<div className="engine">
+        <h4><pre>Looks like you don't have<br/>any parts!</pre></h4>
+        <h5>By <pre>No one</pre></h5>
+    </div>];
+
+    let userParts = (<div className="engines">
+        {userPartsMap}
+    </div>);
+
+    if(userEngines !== undefined) {
+        userPartsMap = [];
+        //console.log(userEngines);
+        for(var keyy in userEngines) {
+            let myParts = [];
+            userEngines[keyy].map((item, key) => {
+                let name = item;
+    
+                const h4id = item.id + "h4";
+                const h4preid = item.id + "4p";
+                const h5id = item.id + "h5";
+                const h5preid = item.id + "5p";
+                if (name.length > 27) {
+                    name = name.substring(0, 24) + "...";
+                }
+    
+                myParts.push(
+                    <div div id={item.id} key={key} className="engine">
+                        <h4 id={h4id}><pre id={h4preid}>{name}</pre></h4>
+                        <h5 id={h5id}>By <pre id={h5preid}>{keyy}</pre></h5>
+                        {/* <img id={imid} src={item.image_url} alt={item.name} width="200"/> */}
+                    </div>
+                )
+            })
+            userPartsMap.push(myParts);
+        }
+        console.log(userPartsMap);
+
+        userParts = (
+            <div className="engines">
+                {userPartsMap}
+            </div>
+        );
     }
 
     return (
@@ -176,6 +259,8 @@ function Launcher(props) {
                 <button onClick={redownloadAll}><FontAwesomeIcon icon={faRedo}/> Redownload all</button>
             </div>
             {props.downloadedParts}
+            <h2>Your Parts</h2>
+            {userParts}
         </div>
     );
 }

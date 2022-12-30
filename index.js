@@ -133,36 +133,6 @@ const requestListener = (request, response) => {
                 const link = url.searchParams.get('link');
                 const dest = "es/packed/latest.zip";
                 fs.promises.mkdir(path.dirname(dest), {recursive: true}).then((x) => {
-                    /*const file = fs.createWriteStream(dest);
-
-                    file.on('pipe', (src) => {
-                        console.log("pipe " + src);
-                    });
-
-                    file.on('error', (err) => {
-                        response.writeHead(500, "Server Error", { 'Access-Control-Allow-Origin': '*' });
-                        response.end("Server error: Error while downloading: '" + err.message + "'");
-                        console.error("[ SERVER ] Server error: Error while downloading: '" + err.message + "'");
-                        console.log("[ SERVER ] 500: Server Error");
-                    });
-
-                    //const request = fetch(link).then((data) => {
-                    const request = https.get(link, (res) => {
-                        res.pipe(file);
-                        console.log(link);
-                        res.on('end', () => {
-                            console.log("response end");
-                        });
-                        // after download completed close filestream
-                        file.on("finish", () => {
-                            file.close();
-                            console.log("Finished");
-
-                            response.writeHead(200, "OK", { 'Access-Control-Allow-Origin': '*' });
-                            response.end("No response message.");
-                            console.log("[ SERVER ] 200: OK");
-                        });
-                    });*/
                     exec("curl -L -o " + dest + " " + link, (error, stdout, stderr) => {
                         if(error) {
                             console.log("[ SERVER ] cURL stderr: " + stderr);
@@ -227,6 +197,24 @@ const requestListener = (request, response) => {
                     \nAvailable commands (prefix: '/'): 'status', 'deleteDirectory', 'deleteDir', 'deleteFile', 'saveFile', 'savePart', 'getFile'`
                     );
                 console.log("[ SERVER ] 200: OK");
+                break;
+
+            case "/getFolder":
+                const name = url.searchParams.get('name');
+                fs.readdir(name, (err, files) => {
+                    if(err) {
+                        response.writeHead(500, "Server Error", { 'Access-Control-Allow-Origin': '*' });
+                        response.end("Server error: Error while deleting directory: '" + err.message + "'");
+                        console.error("[ SERVER ] Server error: Error while deleting directory: '" + err.message + "'");
+                        console.log("[ SERVER ] 500: Server Error");
+                    }
+                    else {
+                        response.writeHead(200, "OK", { 'Access-Control-Allow-Origin': '*' });
+                        response.end(JSON.stringify(files));
+                        console.log(files);
+                        console.log("[ SERVER ] 200: OK");
+                    }
+                });
                 break;
             
             default:
