@@ -1,0 +1,115 @@
+
+.catalog {
+
+}
+
+.id {
+    opacity: 0.5;
+    font-family: monospace;
+}
+
+.catalogPage {
+
+}
+
+.catalogPageContent .buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.catalogPageContent .buttons button {
+    flex-grow: 1;
+    background-color: #45475a;
+    padding: 5px;
+    font-size: medium;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: background-color 250ms;
+}
+
+.catalogPageContent .buttons button:hover {
+    background-color: #6c7086;
+}
+
+.catalogPageContent .latestParts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    background-color: #313234;
+    padding: 10px;
+    border-radius: 10px;
+    width: calc(100vw - 20px - 50px - 45px);
+}
+
+.catalogPageContent .latestParts::-webkit-scrollbar {
+    background-color: #1e1e2e;
+    border-radius: 10px;
+    height: 10px;
+}
+
+.catalogPageContent .latestParts::-webkit-scrollbar-thumb {
+    background-color:  	#9399b2;
+    border-radius: 10px;
+}
+
+.latestFlex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.latestFlex form {
+    display: flex;
+    gap: 5px;
+}
+
+.latestFlex input {
+    height: fit-content;
+    font-size: medium;
+    background-color: #585b70;
+    color: white;
+    margin-top: 25px;
+    padding: 10px;
+}
+
+.latestFlex input::placeholder {
+    color: #bac2de;
+    opacity: 1; /* Firefox */
+}
+
+.part {
+    background-color: #1e1e2e;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    max-width: calc(100% - 20px);
+    min-width: calc(100% - 20px);
+}
+
+.part .partData {
+    display: flex;
+    flex-direction: column;
+}
+
+.part img {
+    align-self: center;
+    border-radius: 5px;
+}
+
+.part h4,
+.part h4 pre {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.part h5,
+.part h5 pre {
+    margin-top: 5px;
+    margin-bottom: 10px;
+}

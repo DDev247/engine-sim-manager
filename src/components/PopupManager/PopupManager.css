@@ -1,0 +1,31 @@
+
+.popupManager {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #6c7086;
+    width: 200px;
+    height: 90px;
+    padding: 10px;
+    border-radius: 10px;
+    opacity: 1;
+    transition: opacity 250ms;
+    box-shadow: 8px 8px 24px 0px rgba(66, 68, 90, 1);
+}
+
+.popupManager.hidden {
+    opacity: 0;
+}
+
+.popupManager .top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popupManager h2 {
+    margin: 0;
+}
+
+.popupManager h4 {
+    margin-top: 5px;
+}

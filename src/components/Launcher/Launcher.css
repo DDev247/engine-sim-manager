@@ -1,0 +1,118 @@
+
+.launcher {
+
+}
+
+.id {
+    opacity: 0.5;
+    font-family: monospace;
+}
+
+/* .launcher svg {
+    color: #40a02b;
+} */
+
+.installation {
+    background-color: #313234;
+    padding: 10px;
+    border-radius: 10px;
+    width: calc(100vw - 20px - 50px - 45px);
+    display: flex;
+    gap: 10px;
+}
+
+.installation img {
+    border-radius: 10px;
+}
+
+.installation h3 {
+    margin-bottom: 5px;
+}
+
+.installation h4 {
+    margin-top: 10px;
+}
+
+.installation pre {
+    display: inline;
+    margin: 0;
+}
+
+.installation .text {
+    flex-grow: 1;
+}
+
+.installation .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+}
+
+.installation .buttons button {
+    /* height: 25px; */
+    background-color: #1e1e2e;
+    padding: 8px;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    transition: background-color 250ms;
+}
+
+.installation .buttons button:hover {
+    background-color: #6c7086;
+}
+
+.launcher .mainmr h2 {
+    padding-left: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    background-color: #1e1e2e;
+    border-radius: 10px 10px 10px 10px;
+    transition: border-radius 250ms;
+}
+
+.launcher .mainmr h2.active {
+    border-radius: 10px 10px 0px 0px;
+}
+
+.launcher .mainmr pre {
+    margin-bottom: 0px;
+}
+
+.launcher .mainmr .content {    
+    overflow: hidden;
+
+    margin-top: -10px;
+    max-height: 0px;
+    transition: max-height 250ms ease-out;
+}
+
+.launcher .mainmr .content pre {    
+    margin-top: 0px;
+    background-color: #313234;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.launcher .down {
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+}
+
+.launcher .down button {
+    /* height: 25px; */
+    margin-top: 15px;
+    margin-bottom: 15px;
+    background-color: #1e1e2e;
+    padding: 8px;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    transition: background-color 250ms;
+}
+
+.launcher .down button:hover {
+    background-color: #6c7086;
+}
