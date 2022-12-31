@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Launcher.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faQuestion, faRedo, faRocket } from '@fortawesome/free-solid-svg-icons';
 import es_logo from "../../es_logo.png";
 
+import ViewManufacturer from "../ViewManufacturer/ViewManufacturer";
+
 function Launcher(props) {
     const [simVersion, setSimVersion] = useState("v0.1.11a");
     const [main_mr, setMain_mr] = useState();
     const [userEngines, setUserEngines] = useState(undefined);
+    const [page, setPage] = useState("home");
+    const [clickedManufacturer, setClickedManufacturer] = useState(undefined);
 
     const fetchUserEngines = () => {
         let myEngineList = {};
@@ -186,34 +190,84 @@ function Launcher(props) {
         {userPartsMap}
     </div>);
 
+    const manufacturerClicked = (e) => {
+        let id = "";
+        if(e.target.nodeName !== "DIV") {
+            id = e.target.id.substring(0, e.target.id.length - 2);
+        }
+        else {
+            id = e.target.id;
+        }
+        setClickedManufacturer(id);
+        setPage("manufacturer");        
+    };
+
     if(userEngines !== undefined) {
-        userPartsMap = [];
+        /*
+        let userPartsList = [];
         //console.log(userEngines);
         for(var keyy in userEngines) {
             let myParts = [];
             userEngines[keyy].map((item, key) => {
                 let name = item;
     
-                const h4id = item.id + "h4";
-                const h4preid = item.id + "4p";
-                const h5id = item.id + "h5";
-                const h5preid = item.id + "5p";
+                const itemkey = item + key;
+                const h4id = item + "h4";
+                const h4preid = item + "4p";
+                const h5id = item + "h5";
+                const h5preid = item + "5p";
                 if (name.length > 27) {
                     name = name.substring(0, 24) + "...";
                 }
     
                 myParts.push(
-                    <div div id={item.id} key={key} className="engine">
+                    <div div id={item} key={itemkey.toString()} className="engine">
                         <h4 id={h4id}><pre id={h4preid}>{name}</pre></h4>
                         <h5 id={h5id}>By <pre id={h5preid}>{keyy}</pre></h5>
-                        {/* <img id={imid} src={item.image_url} alt={item.name} width="200"/> */}
                     </div>
                 )
             })
-            userPartsMap.push(myParts);
+            userPartsList.push(myParts);
         }
+
+        console.log(userPartsList);
+
+        userPartsMap = [];
+
+        userPartsList.map((item, key) => {
+            // console.log("item => " + JSON.stringify(item));
+            item.map((item2, key2) => {
+                // console.log("item2 => " + JSON.stringify(item2));
+                userPartsMap.push(item2);
+            });
+        });
+
         console.log(userPartsMap);
 
+        */
+        
+        userPartsMap = [];
+        for(const key in userEngines) {
+            let name = key;
+    
+            const itemkey = key;
+            const h4id = key + "h4";
+            const h4preid = key + "4p";
+            const h5id = key + "h5";
+            const h5preid = key + "5p";
+            if (name.length > 27) {
+                name = name.substring(0, 24) + "...";
+            }
+            
+            const len = userEngines[key].length + 0;
+            userPartsMap.push(
+                <div id={key} key={itemkey.toString()} className="engine" onClick={manufacturerClicked}>
+                    <h4 id={h4id}><pre id={h4preid}>{name}</pre></h4>
+                    <h5 id={h5id}>Has <code id={h5preid}>{len}</code> {len > 1 ? "Parts" : "Part"}</h5>
+                </div>
+            );
+        };
+        
         userParts = (
             <div className="engines">
                 {userPartsMap}
@@ -221,8 +275,8 @@ function Launcher(props) {
         );
     }
 
-    return (
-        <div className="launcher">
+    let pageContent = (
+        <div>
             <h1>Engine Simulator Launcher</h1>
             <pre className="id">Tip: Right-click the icon to launch the Engine Simulator instantly.</pre>
             <h2>Your Installation</h2>
@@ -261,6 +315,23 @@ function Launcher(props) {
             {props.downloadedParts}
             <h2>Your Parts</h2>
             {userParts}
+        </div>
+    );
+    
+    switch (page) {
+        case "manufacturer":
+            pageContent = (
+                <ViewManufacturer name={clickedManufacturer} userEngines={userEngines} setPage={setPage}/>
+            );
+            break;
+    
+        default:
+            break;
+    }
+
+    return (
+        <div className="launcher">
+            {pageContent}
         </div>
     );
 }
