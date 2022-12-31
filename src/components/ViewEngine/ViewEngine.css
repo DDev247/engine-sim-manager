@@ -70,7 +70,7 @@
     flex-grow: 1;
     background-color: #45475a;
     padding: 5px;
-    color: white;
+    color: var(--text-color);
     border: none;
     border-radius: 10px;
     transition: background-color 250ms;
