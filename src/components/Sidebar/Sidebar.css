@@ -5,7 +5,7 @@
     left: 0px;
     bottom: 0px;
     width: 50px;
-    background-color: #313234;
+    background-color: var(--div1-background-color);
     border-radius: 0px 10px 10px 0px;
     display: flex;
     flex-direction: column;
@@ -30,13 +30,14 @@
     width: 40px;
     height: 40px;
     border-radius: 100%;
-    background-color: #1e1e2e;
+    background-color: var(--sidebar-icon-background-color);
+    color: var(--sidebar-icon-color);
     scale: 1;
     transition: border-radius 250ms, scale 250ms;
 }
 
 .sidebarItem.launch {
-    background-color: #40a02b;
+    background-color: var(--launch-button-background-color);
 }
 
 .sidebarItem:hover {

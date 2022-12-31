@@ -28,7 +28,7 @@
 
 .tutorialPage * {
     transition: color 500ms, background-color 500ms;
-    color: white;
+    color: var(--text-color);
 }
 
 .tutorialPage.animateOut * {

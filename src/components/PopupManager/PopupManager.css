@@ -3,7 +3,7 @@
     position: fixed;
     top: 20px;
     right: 20px;
-    background-color: #6c7086;
+    background-color: var(--div2-background-color);
     width: 200px;
     height: 90px;
     padding: 10px;

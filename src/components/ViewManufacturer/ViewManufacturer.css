@@ -14,14 +14,14 @@
     flex-direction: column;
     gap: 10px;
 
-    background-color: #313234;
+    background-color: var(--div1-background-color);
     padding: 10px;
     border-radius: 10px;
     width: calc(100vw - 20px - 50px - 45px);
 }
 
 .manEngine {
-    background-color: #1e1e2e;
+    background-color: var(--div2-background-color);
     padding: 10px;
     border-radius: 10px;
     display: flex;
@@ -105,7 +105,7 @@
     flex-grow: 1;
     background-color: #45475a;
     padding: 5px;
-    color: white;
+    color: var(--text-color);
     border: none;
     border-radius: 10px;
     transition: background-color 250ms;
