@@ -32,6 +32,7 @@
     border-radius: 100%;
     background-color: var(--sidebar-icon-background-color);
     color: var(--sidebar-icon-color);
+    fill: var(--sidebar-icon-color);
     scale: 1;
     transition: border-radius 250ms, scale 250ms;
 }

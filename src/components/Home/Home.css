@@ -93,6 +93,7 @@
 
 .versionHome {
     position: fixed;
+    text-align: right;
     bottom: 5px;
     right: 15px;
     padding: 0;
@@ -150,6 +151,11 @@
 
 .themeCode .top h2 pre {
     margin-top: 5px;
+}
+
+.themeCode .top div {
+    display: flex;
+    gap: 5px;
 }
 
 .themeCode .top.active {

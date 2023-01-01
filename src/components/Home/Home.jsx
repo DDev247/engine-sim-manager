@@ -37,6 +37,7 @@ function Home(props) {
         let devmode = localStorage.getItem("devmode");
         let savedList = localStorage.getItem("savedParts");
         let downloadedList = localStorage.getItem("downloadedParts");
+        let theme = localStorage.getItem("themeCode");
         
         // Compare them, if "null" set them to their default.
         // If not set them to the value from localStorage.
@@ -59,6 +60,11 @@ function Home(props) {
             setDownloadedList("{\"list\":[]}");
         else
             setDownloadedPartsList(downloadedList);
+
+        if(theme === null)
+            setTheme(null);
+        else
+            setTheme(theme);
     }, []);
 
     // Loads the latest parts from the Parts Catalog.
@@ -308,6 +314,26 @@ function Home(props) {
         localStorage.setItem("downloadedParts", value);
     }
 
+    const setTheme = (value) => {
+        setThemeCode(value);
+        localStorage.setItem("themeCode", value);
+
+        let customTheme = document.createElement('style');
+        customTheme.innerHTML = value; // change to inputted path
+        customTheme.id = "theme";
+    
+        console.log(document.getElementById("theme"));
+        // Removes the previous theme
+        if(document.getElementById("theme") !== null)
+            document.getElementById("theme").remove();
+    
+        document.head.appendChild(customTheme);
+
+        if(document.getElementById("themeCode") !== null) {
+            document.getElementById("themeCode").innerHTML = value;
+        }
+    }
+
     // Executed when a user enters something in settings.
     const inputData = (e) => {
         //console.log(e.target.id + " : " + e.target.value);
@@ -325,20 +351,7 @@ function Home(props) {
                 
                 fetch("http://127.0.0.1:24704/getFile?name=" + e.target.files[0].path).then((data) => {
                     data.text().then((text) => {
-                        setThemeCode(text);
-                        let customTheme = document.createElement('style');
-                        customTheme.innerHTML = text; // change to inputted path
-                        //customTheme.rel = "stylesheet";
-                        customTheme.id = "theme";
-        
-                        console.log(document.getElementById("theme"));
-                        // Removes the previous theme
-                        if(document.getElementById("theme") !== null)
-                            document.getElementById("theme").remove();
-        
-                        document.head.appendChild(customTheme);
-
-                        document.getElementById("themeCode").innerHTML = text;
+                        setTheme(text);
                     });
                 });
                 break;
@@ -351,6 +364,38 @@ function Home(props) {
             default:
                 break;
         }
+    }
+
+    const saveTheme = (e) => {
+        const value = document.getElementById("themeCode").innerHTML;
+
+        let blobData = new Blob([value], {type: "text/plain"});
+        let url = window.URL.createObjectURL(blobData);
+        
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = url;
+        a.download = "theme.css";
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+
+        setTheme(value);
+    }
+
+    const loadTheme = (e) => {
+        let customTheme = document.createElement('style');
+        customTheme.innerHTML = themeCode; // change to inputted path
+        customTheme.id = "theme";
+    
+        console.log(document.getElementById("theme"));
+        // Removes the previous theme
+        if(document.getElementById("theme") !== null)
+            document.getElementById("theme").remove();
+    
+        document.head.appendChild(customTheme);
+    
+        document.getElementById("themeCode").innerHTML = themeCode;
     }
 
     let text = (
@@ -414,7 +459,10 @@ function Home(props) {
                         <div className="themeCode">
                             <div className="top" id="themeCodeHeader" onClick={expandThemeCode}>
                                 <h2><pre>Theme</pre></h2>
-                                <button><FontAwesomeIcon icon={faSave}/> Save</button>
+                                <div>
+                                    <button onClick={loadTheme}><FontAwesomeIcon icon={faDownload}/> Load</button>
+                                    <button onClick={saveTheme}><FontAwesomeIcon icon={faSave}/> Save</button>
+                                </div>
                             </div>
                             <div id="themeCodeContent" className="content">
                                 <pre onInput={inputData} id="themeCode" contentEditable autoCorrect="false" autoCapitalize="false" autoSave="false">
