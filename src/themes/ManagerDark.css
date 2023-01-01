@@ -1,0 +1,33 @@
+/*
+
+    Theme : Default Dark
+
+    Load using `import "themes/ManagerDark.css"` in App.jsx
+
+*/
+
+:root {
+
+  --body-background-color: #333333;
+  --text-color: #FFFFFF;
+  --link-color: #0066FF;
+
+  --hover-background-color: #666666;
+  --div1-background-color: #222222;
+  --div2-background-color: #333333;
+
+  --scrollbar-background-color: #666666;
+  --scrollbar-color: #888888;
+
+  --input-background-color: #222222;
+  --input-placeholder-color: #555555;
+
+  --launch-button-background-color: #00CC00;
+  --launch-button-color: #333333;
+  --sidebar-background-color: #262626;
+  --sidebar-icon-background-color: #222222;
+  --sidebar-icon-color: #FFFFFF;
+
+  --download-icon-color: #AAAAAA;
+  --starred-icon-color: #FFFF00;
+}

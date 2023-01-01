@@ -1,13 +1,15 @@
-
 /*
 
-    Theme : Custom Catppuccin Mocha
+    Theme : Catppuccin Mocha
 
-    Load using `import "themes/catppuccin-mod.css"` in App.jsx
+    Load using `import "themes/CatppuccinMocha.css"` in App.jsx
 
 */
 
 :root {
+
+    /* Do not change */
+    
     --Rosewater: #f5e0dc;
     --Flamingo: #f2cdcd;
     --Pink: #f5c2e7;
@@ -49,22 +51,24 @@
 
     /* Setup colors here */
 
-    --body-background-color: var(--Red);
+    --body-background-color: var(--Mantle);
     --text-color: var(--Text);
     --link-color: var(--Sapphire);
 
-    --hover-background-color: var(--Surface1);
+    --hover-background-color: var(--Surface0);
     --div1-background-color: var(--Base);
-    --div2-background-color: var(--Custom-Surface);
+    --div2-background-color: var(--Mantle);
     
-    --scrollbar-background-color: var(--Custom-Surface0);
+    --scrollbar-background-color: var(--Surface0);
     --scrollbar-color: var(--Surface2);
 
     --input-background-color: var(--Base);
     --input-placeholder-color: var(--Subtext0);
 
-    --launch-button-background-color: var(--Custom-Green);
-    --sidebar-icon-background-color: var(--Surface0);
+    --launch-button-background-color: var(--Green);
+    --launch-button-color: var(--Mantle);
+    --sidebar-background-color: var(--Crust);
+    --sidebar-icon-background-color: var(--Base);
     --sidebar-icon-color: var(--Text);
 
     --download-icon-color: var(--Subtext0);

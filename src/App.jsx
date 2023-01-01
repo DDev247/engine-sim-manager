@@ -6,7 +6,7 @@ import Home from './components/Home/Home';
 import PopupManager from './components/PopupManager/PopupManager';
 
 import "./themes/themes.css";
-import "./themes/catppuccin-mod.css";
+import "./themes/ManagerDark.css";
 
 function App() {
     const [tutorialDone, setTutorialDone] = useState(false);

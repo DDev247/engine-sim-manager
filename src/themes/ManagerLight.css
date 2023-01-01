@@ -1,0 +1,33 @@
+/*
+
+    Theme : Default Light
+
+    Load using `import "themes/ManagerLight.css"` in App.jsx
+
+*/
+
+:root {
+
+  --body-background-color: #FFFFFF;
+  --text-color: #000000;
+  --link-color: #0000FF;
+
+  --hover-background-color: #CCCCCC;
+  --div1-background-color: #DDDDDD;
+  --div2-background-color: #EEEEEE;
+
+  --scrollbar-background-color: #CCCCCC;
+  --scrollbar-color: #999999;
+
+  --input-background-color: #EEEEEE;
+  --input-placeholder-color: #CCCCCC;
+
+  --launch-button-background-color: #00CC00;
+  --launch-button-color: #FFFFFF;
+  --sidebar-background-color: #F0F0F0;
+  --sidebar-icon-background-color: #D1D1D1;
+  --sidebar-icon-color: #000000;
+
+  --download-icon-color: #999999;
+  --starred-icon-color: #FFFF00;
+}

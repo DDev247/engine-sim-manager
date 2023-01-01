@@ -1,0 +1,32 @@
+/*
+
+    Theme : Default Medium
+
+    Load using `import "themes/ManagerMedium.css"` in App.jsx
+
+*/
+
+:root {
+  --body-background-color: #444444;
+  --text-color: #FFFFFF;
+  --link-color: #0066FF;
+
+  --hover-background-color: #666666;
+  --div1-background-color: #555555;
+  --div2-background-color: #444444;
+
+  --scrollbar-background-color: #666666;
+  --scrollbar-color: #888888;
+
+  --input-background-color: #555555;
+  --input-placeholder-color: #777777;
+
+  --launch-button-background-color: #00CC00;
+  --launch-button-color: #FFFFFF;
+  --sidebar-background-color: #4D4D4D;
+  --sidebar-icon-background-color: #555555;
+  --sidebar-icon-color: #FFFFFF;
+
+  --download-icon-color: #777777;
+  --starred-icon-color: #FFFF00;
+}

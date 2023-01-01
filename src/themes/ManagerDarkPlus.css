@@ -1,0 +1,32 @@
+/*
+
+    Theme : Default Dark Plus
+
+    Load using `import "themes/ManagerDarkPlus.css"` in App.jsx
+
+*/
+
+:root {
+  --body-background-color: #222222;
+  --text-color: #FFFFFF;
+  --link-color: #0066FF;
+
+  --hover-background-color: #444444;
+  --div1-background-color: #111111;
+  --div2-background-color: #222222;
+
+  --scrollbar-background-color: #444444;
+  --scrollbar-color: #666666;
+
+  --input-background-color: #111111;
+  --input-placeholder-color: #333333;
+
+  --launch-button-background-color: #00CC00;
+  --launch-button-color: #FFFFFF;
+  --sidebar-background-color: #262626;
+  --sidebar-icon-background-color: #111111;
+  --sidebar-icon-color: #FFFFFF;
+
+  --download-icon-color: #333333;
+  --starred-icon-color: #FFFF00;
+}
