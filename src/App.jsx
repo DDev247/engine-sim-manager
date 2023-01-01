@@ -26,7 +26,7 @@ function App() {
             done = JSON.parse(localStorage.getItem("tutorialDone"));
         }
 
-        fetch("https://raw.githubusercontent.com/DDev247/engine-sim-manager/master/latest").then((data) => {
+        fetch("https://raw.githubusercontent.com/DDev247/engine-sim-manager/master/version").then((data) => {
             data.text().then((text) => {
                 if(data.ok) {
                     setLatestVersion(Number.parseFloat(text));

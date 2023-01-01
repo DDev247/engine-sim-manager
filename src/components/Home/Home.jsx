@@ -6,7 +6,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import ViewEngine from '../ViewEngine/ViewEngine';
 import Catalog from '../Catalog/Catalog';
 import Launcher from '../Launcher/Launcher';
-import { faDownload, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faSave, faStar } from '@fortawesome/free-solid-svg-icons';
 
 function Home(props) {
     const [page, setPage] = useState("home");
@@ -16,9 +16,13 @@ function Home(props) {
     const [savedPartsList, setSavedPartsList] = useState(undefined);
     const [engineList, setEngineList] = useState(undefined);
     const [selectedID, setSelectedID] = useState(0);
+    const [themeCode, setThemeCode] = useState("");
 
+    // Changes the page and scrolls to the top.
     const changePage = (page) => {
         setPage(page);
+
+        // Scroll to the top (smoothly)
         document.getElementById("home").scroll({
             top: 0,
             left: 0,
@@ -26,12 +30,16 @@ function Home(props) {
         });
     }
 
+    // Loads settings from localStorage.
     useEffect(() => {
+        // Get the items from localStorage
         let tok = localStorage.getItem("token");
         let devmode = localStorage.getItem("devmode");
         let savedList = localStorage.getItem("savedParts");
         let downloadedList = localStorage.getItem("downloadedParts");
         
+        // Compare them, if "null" set them to their default.
+        // If not set them to the value from localStorage.
         if(tok === null)
             setTok("");
         else
@@ -53,39 +61,51 @@ function Home(props) {
             setDownloadedPartsList(downloadedList);
     }, []);
 
+    // Loads the latest parts from the Parts Catalog.
+    // WARNING: Currently broken.
     useEffect(() => {
         async function getEngines() {
+            // Get the JSON from the Parts Catalog
             const response = await fetch("https://catalog.engine-sim.parts/api/parts/");
             let json = await response.json();
+            
             setEngineList(json.data);
         }
 
+        // Call the async function
         getEngines();
-        //console.log(engineList);
     }, []);
 
+    // Element that contains the map of the latest parts.
     let engineMap = (<div></div>);
     
+    // Element that contains the latest parts map.
     let engines = (
         <div className="engines">
             {engineMap}
         </div>
     );
 
+    // Executed when a user clicks a part.
     const engineClicked = (e) => {
         let id = 0;
+
+        // Check if the target element is typeof "DIV"
         if(e.target.nodeName !== "DIV") {
             id = e.target.id.substring(0, e.target.id.length - 2);
         }
         else {
             id = e.target.id;
         }
-        //console.log(e.target);
+
+        // Set the part ID and change page to "viewEngine"
         setSelectedID(id);
         changePage("viewEngine");
     }
 
+    // Executes when the engineList finished loading and is not empty.
     if(engineList !== undefined) {
+        // Map the engineList to the engineMap element.
         engineMap = engineList.map((item, key) => {
             let name = item.name;
 
@@ -94,22 +114,27 @@ function Home(props) {
             const h5id = item.id + "h5";
             const h5preid = item.id + "5p";
             const imid = item.id + "im";
+
+            // Trim the name to max 27 characters
             if (name.length > 27) {
                 name = name.substring(0, 24) + "...";
             }
 
+            // Check if part is starred
             let json = JSON.parse(savedPartsList);
             let starred = false;
             if(json.list.find(e => e.id === item.id)) {
                 starred = true;
             }
 
+            // Check if part is downloaded
             json = JSON.parse(downloadedPartsList);
             let downloaded = false;
             if(json.list.find(e => e.id === item.id)) {
                 downloaded = true;
             }
 
+            // Return the mapped part
             return (
                 <div id={item.id} key={key} className="engine" onClick={engineClicked}>
                     <h4 id={h4id}>
@@ -120,8 +145,10 @@ function Home(props) {
                     <h5 id={h5id}>By <pre id={h5preid}>{item.short_user.name}</pre></h5>
                     <img id={imid} src={item.image_url} alt={item.name} width="200"/>
                 </div>   
-            )});
+            )
+        });
         
+        // Set this element to the fresh engineMap
         engines = (
             <div className="engines">
                 {engineMap}
@@ -129,20 +156,23 @@ function Home(props) {
         );
     }
 
+    // Element that contains the map of savedPartsList.
     let partsMap = (<div className="engine">
         <h4><pre>Looks like you don't have<br/>any starred parts!</pre></h4>
         <h5>By <pre>No one</pre></h5>
     </div>);
 
+    // Element that contains the savedPartsList map.
     let savedParts = (<div className="engines">
         {partsMap}
     </div>);
 
+    // Executes when the savedPartsList finished loading and is not empty.
     if(savedPartsList !== undefined && savedPartsList !== "{\"list\":[]}") {
-        //console.log(savedPartsList);
-        let json = JSON.parse(savedPartsList).list;
+        let list = JSON.parse(savedPartsList).list;
         
-        partsMap = json.map((item, key) => {
+        // Map the savedPartsList list element to the partsMap element.
+        partsMap = list.map((item, key) => {
             let name = item.name;
 
             const h4id = item.id + "h4";
@@ -150,16 +180,23 @@ function Home(props) {
             const h5id = item.id + "h5";
             const h5preid = item.id + "5p";
             const imid = item.id + "im";
+
+            // Trim the name to max 27 characters
             if (name.length > 27) {
                 name = name.substring(0, 24) + "...";
             }
 
+            // Don't need to check if part is starred because
+            // we're mapping the starred parts list (aka. savedPartsList)
+
+            // Check if part is downloaded
             let jsonn = JSON.parse(downloadedPartsList);
             let downloaded = false;
             if(jsonn.list.find(e => e.id === item.id)) {
                 downloaded = true;
             }
 
+            // Return the mapped part
             return (
                 <div id={item.id} key={key} className="engine" onClick={engineClicked}>
                     <h4 id={h4id}>
@@ -173,6 +210,7 @@ function Home(props) {
             );
         });
 
+        // Set this element to the fresh partsMap
         savedParts = (
             <div className="engines">
                 {partsMap}
@@ -180,15 +218,18 @@ function Home(props) {
         );
     }
 
+    // Element that contains the map of downloadedPartsList.
     let downloadedPartsMap = (<div className="engine">
         <h4><pre>Looks like you don't have<br/>any downloaded parts!</pre></h4>
         <h5>By <pre>No one</pre></h5>
     </div>);
 
+    // Element that contains the downloadedPartsList map.
     let downloadedParts = (<div className="engines">
         {downloadedPartsMap}
     </div>);
 
+    // Executes when the downloadedPartsList finished loading and is not empty.
     if(downloadedPartsList !== undefined && downloadedPartsList !== "{\"list\":[]}") {
         //console.log(savedPartsList);
         let json = JSON.parse(downloadedPartsList).list;
@@ -231,6 +272,7 @@ function Home(props) {
         );
     }
 
+    // Page content
     let content = (
         <div className="homeContent">
             <h1>Welcome back!</h1>
@@ -242,26 +284,31 @@ function Home(props) {
         </div>
     );
 
+    // Sets the Catalog Token and saves it to localStorage
     const setTok = (value) => {
         setToken(value);
         localStorage.setItem("token", value);
     }
 
+    // Sets the developerMode and saves it to localStorage
     const setDevMode = (value) => {
         setDeveloperMode(value);
         localStorage.setItem("devmode", value);
     }
 
+    // Sets the savedPartsList and saves it to localStorage
     const setSavedList = (value) => {
         setSavedPartsList(value);
         localStorage.setItem("savedParts", value);
     }
 
+    // Sets the downloadedPartsList and saves it to localStorage
     const setDownloadedList = (value) => {
         setDownloadedPartsList(value);
         localStorage.setItem("downloadedParts", value);
     }
 
+    // Executed when a user enters something in settings.
     const inputData = (e) => {
         //console.log(e.target.id + " : " + e.target.value);
         switch (e.target.id) {
@@ -278,6 +325,7 @@ function Home(props) {
                 
                 fetch("http://127.0.0.1:24704/getFile?name=" + e.target.files[0].path).then((data) => {
                     data.text().then((text) => {
+                        setThemeCode(text);
                         let customTheme = document.createElement('style');
                         customTheme.innerHTML = text; // change to inputted path
                         //customTheme.rel = "stylesheet";
@@ -289,8 +337,15 @@ function Home(props) {
                             document.getElementById("theme").remove();
         
                         document.head.appendChild(customTheme);
+
+                        document.getElementById("themeCode").innerHTML = text;
                     });
                 });
+                break;
+
+            case "themeCode":
+                document.getElementById("theme").innerHTML = e.target.innerHTML;
+
                 break;
         
             default:
@@ -299,13 +354,29 @@ function Home(props) {
     }
 
     let text = (
-        <pre className="versionHome">Engine Simulator Manager v{props.currentVersion} - latest</pre>
+        <pre className="versionHome">Engine Simulator Manager v{props.currentVersion}<br/>latest</pre>
     );
 
     if(props.outdated) {
         text = (
-            <pre className="versionHome">Engine Simulator Manager v{props.currentVersion} - outdated - v{props.latestVersion}</pre>
+            <pre className="versionHome">Engine Simulator Manager v{props.currentVersion}<br/>outdated - v{props.latestVersion}</pre>
         );
+    }
+
+    const expandThemeCode = (e) => {
+        if(themeCode !== "") {
+            const content = document.getElementById("themeCodeContent");
+
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            }
+            else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            } 
+
+            const header = document.getElementById("themeCodeHeader");
+            header.classList.toggle("active");
+        }
     }
 
     switch (page) {
@@ -338,7 +409,20 @@ function Home(props) {
                         <h3>Engine Simulator Catalog <a target="_blank" href="https://catalog.engine-sim.parts/user/api-tokens">API Token</a></h3>
                         <input onChange={inputData} id="apiToken" title="API Token" defaultValue={token}></input>
                         <h3>Custom theme file</h3>
-                        <input type="file" onChange={inputData} id="themeInput" title="Theme Path"></input>
+                        <input className="themeInput" type="file" onChange={inputData} id="themeInput" title="Theme Path"></input>
+
+                        <div className="themeCode">
+                            <div className="top" id="themeCodeHeader" onClick={expandThemeCode}>
+                                <h2><pre>Theme</pre></h2>
+                                <button><FontAwesomeIcon icon={faSave}/> Save</button>
+                            </div>
+                            <div id="themeCodeContent" className="content">
+                                <pre onInput={inputData} id="themeCode" contentEditable autoCorrect="false" autoCapitalize="false" autoSave="false">
+
+                                </pre>
+                            </div>
+                        </div>
+
                     </div>
                     {text}
                 </div>
