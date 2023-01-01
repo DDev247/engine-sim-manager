@@ -134,8 +134,8 @@ function Catalog(props) {
                     <img id={imid} src={item.image_url} alt={item.name} width="200"/>
                     <div className="partData">
                         <h4 id={h4id}>
-                            {starred ? (<FontAwesomeIcon icon={faStar}/>) : (<div/>)}
-                            {downloaded ? (<FontAwesomeIcon icon={faDownload}/>) : (<div/>)}
+                            {starred ? (<FontAwesomeIcon className="starred" icon={faStar}/>) : (<div/>)}
+                            {downloaded ? (<FontAwesomeIcon className="downloaded" icon={faDownload}/>) : (<div/>)}
                             <pre id={h4preid}>{name}</pre>
                         </h4>
 

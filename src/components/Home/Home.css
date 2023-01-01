@@ -101,3 +101,11 @@
     font-family: monospace;
     font-size: smaller;
 }
+
+.starred {
+    color: var(--starred-icon-color);
+}
+
+.downloaded {
+    color: var(--download-icon-color);
+}

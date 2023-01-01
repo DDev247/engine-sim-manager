@@ -112,8 +112,8 @@ function ViewEngine(props) {
         engineView = (
             <div className="engineData">
                 <h2>
-                    {starred ? (<FontAwesomeIcon icon={faStar}/>) : (<div/>)}
-                    {downloaded ? (<FontAwesomeIcon icon={faDownload}/>) : (<div/>)}
+                    {starred ? (<FontAwesomeIcon className="starred" icon={faStar}/>) : (<div/>)}
+                    {downloaded ? (<FontAwesomeIcon className="downloaded" icon={faDownload}/>) : (<div/>)}
                     <pre>{engineData.name}</pre><pre className="id">{engID}</pre>
                 </h2>
                 

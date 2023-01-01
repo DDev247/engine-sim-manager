@@ -113,8 +113,8 @@ function Home(props) {
             return (
                 <div id={item.id} key={key} className="engine" onClick={engineClicked}>
                     <h4 id={h4id}>
-                        {starred ? (<FontAwesomeIcon icon={faStar}/>) : (<div/>)}
-                        {downloaded ? (<FontAwesomeIcon icon={faDownload}/>) : (<div/>)}
+                        {starred ? (<FontAwesomeIcon className="starred" icon={faStar}/>) : (<div/>)}
+                        {downloaded ? (<FontAwesomeIcon className="downloaded" icon={faDownload}/>) : (<div/>)}
                         <pre id={h4preid}>{name}</pre>
                     </h4>
                     <h5 id={h5id}>By <pre id={h5preid}>{item.short_user.name}</pre></h5>
@@ -163,8 +163,8 @@ function Home(props) {
             return (
                 <div id={item.id} key={key} className="engine" onClick={engineClicked}>
                     <h4 id={h4id}>
-                        <FontAwesomeIcon icon={faStar}/>
-                        {downloaded ? (<FontAwesomeIcon icon={faDownload}/>) : (<div/>)}
+                        <FontAwesomeIcon className="starred" icon={faStar}/>
+                        {downloaded ? (<FontAwesomeIcon className="downloaded" icon={faDownload}/>) : (<div/>)}
                         <pre id={h4preid}>{name}</pre>
                         </h4>
                     <h5 id={h5id}>By <pre id={h5preid}>{item.short_user.name}</pre></h5>
@@ -214,8 +214,8 @@ function Home(props) {
             return (
                 <div id={item.id} key={key} className="engine" onClick={engineClicked}>
                     <h4 id={h4id}>
-                        {starred ? (<FontAwesomeIcon icon={faStar}/>) : (<div/>)}
-                        <FontAwesomeIcon icon={faDownload}/>
+                        {starred ? (<FontAwesomeIcon className="starred" icon={faStar}/>) : (<div/>)}
+                        <FontAwesomeIcon className="downloaded" icon={faDownload}/>
                         <pre id={h4preid}>{name}</pre>
                         </h4>
                     <h5 id={h5id}>By <pre id={h5preid}>{item.short_user.name}</pre></h5>
@@ -272,6 +272,26 @@ function Home(props) {
             case "devmode":
                 setDevMode(e.target.checked);
                 break;
+
+            case "themeInput":
+                console.log(e.target.files[0]);
+                
+                fetch("http://127.0.0.1:24704/getFile?name=" + e.target.files[0].path).then((data) => {
+                    data.text().then((text) => {
+                        let customTheme = document.createElement('style');
+                        customTheme.innerHTML = text; // change to inputted path
+                        //customTheme.rel = "stylesheet";
+                        customTheme.id = "theme";
+        
+                        console.log(document.getElementById("theme"));
+                        // Removes the previous theme
+                        if(document.getElementById("theme") !== null)
+                            document.getElementById("theme").remove();
+        
+                        document.head.appendChild(customTheme);
+                    });
+                });
+                break;
         
             default:
                 break;
@@ -317,6 +337,8 @@ function Home(props) {
                         {/* </select> */}
                         <h3>Engine Simulator Catalog <a target="_blank" href="https://catalog.engine-sim.parts/user/api-tokens">API Token</a></h3>
                         <input onChange={inputData} id="apiToken" title="API Token" defaultValue={token}></input>
+                        <h3>Custom theme file</h3>
+                        <input type="file" onChange={inputData} id="themeInput" title="Theme Path"></input>
                     </div>
                     {text}
                 </div>
