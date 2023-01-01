@@ -56,7 +56,7 @@
     color: var(--text-color);
     border-radius: 5px;
     border: none;
-    transition: background-color 250ms;
+    transition: background-color 400ms;
 }
 
 .installation .buttons button:hover {
@@ -65,11 +65,11 @@
 
 .launcher .mainmr h2 {
     padding-left: 5px;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+    padding-bottom: 0px;
+    margin-bottom: 10px;
     background-color: var(--div1-background-color);
     border-radius: 10px 10px 10px 10px;
-    transition: border-radius 250ms;
+    transition: border-radius 400ms;
 }
 
 .launcher .mainmr h2.active {
@@ -85,14 +85,17 @@
 
     margin-top: -10px;
     max-height: 0px;
-    transition: max-height 250ms ease-out;
+    transition: max-height 400ms;
 }
 
 .launcher .mainmr .content pre {    
     margin-top: 0px;
-    background-color: var(--div2-background-color);
+    background-color: var(--div1-background-color);
+    border-top: 2px solid var(--div2-background-color);
     padding: 5px;
     border-radius: 10px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
 }
 
 .launcher .down {
@@ -105,12 +108,12 @@
     /* height: 25px; */
     margin-top: 15px;
     margin-bottom: 15px;
-    background-color: var(--div2-background-color);
+    background-color: var(--div0-background-color);
     padding: 8px;
     color: var(--text-color);
     border-radius: 5px;
     border: none;
-    transition: background-color 250ms;
+    transition: background-color 400ms;
 }
 
 .launcher .down button:hover {

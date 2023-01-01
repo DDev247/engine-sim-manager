@@ -5,13 +5,13 @@
     left: 0px;
     bottom: 0px;
     width: 50px;
-    background-color: var(--div1-background-color);
+    background-color: var(--sidebar-background-color);
     border-radius: 0px 10px 10px 0px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     justify-content: space-between;
 }
 
@@ -38,6 +38,7 @@
 
 .sidebarItem.launch {
     background-color: var(--launch-button-background-color);
+    color: var(--launch-button-color);
 }
 
 .sidebarItem:hover {
