@@ -6,7 +6,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import ViewEngine from '../ViewEngine/ViewEngine';
 import Catalog from '../Catalog/Catalog';
 import Launcher from '../Launcher/Launcher';
-import { faDownload, faSave, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faDotCircle, faDownload, faSave, faStar } from '@fortawesome/free-solid-svg-icons';
 
 function Home(props) {
     const [page, setPage] = useState("home");
@@ -17,6 +17,8 @@ function Home(props) {
     const [engineList, setEngineList] = useState(undefined);
     const [selectedID, setSelectedID] = useState(0);
     const [themeCode, setThemeCode] = useState("");
+    const [username, setUserName] = useState("");
+    const [displayUsername, setDisplayUsername] = useState("");
 
     // Changes the page and scrolls to the top.
     const changePage = (page) => {
@@ -38,6 +40,7 @@ function Home(props) {
         let savedList = localStorage.getItem("savedParts");
         let downloadedList = localStorage.getItem("downloadedParts");
         let theme = localStorage.getItem("themeCode");
+        let usern = localStorage.getItem("username");
         
         // Compare them, if "null" set them to their default.
         // If not set them to the value from localStorage.
@@ -65,6 +68,14 @@ function Home(props) {
             setTheme(null);
         else
             setTheme(theme);
+
+        if(usern === null)
+            setUsername("");
+        else
+            setUserName(usern);
+
+        if(usern !== null && usern.trim() !== "")
+            setDisplayUsername(" " + usern);
     }, []);
 
     // Loads the latest parts from the Parts Catalog.
@@ -83,7 +94,10 @@ function Home(props) {
     }, []);
 
     // Element that contains the map of the latest parts.
-    let engineMap = (<div></div>);
+    let engineMap = (<div className="engine">
+    <h4><pre>Looks like you don't have<br/>an internet connection.<br/>Please check your connection<br/>and try again.</pre></h4>
+    <h5>By <pre>No one</pre></h5>
+</div>);
     
     // Element that contains the latest parts map.
     let engines = (
@@ -281,7 +295,7 @@ function Home(props) {
     // Page content
     let content = (
         <div className="homeContent">
-            <h1>Welcome back!</h1>
+            <h1>Welcome back{displayUsername}!</h1>
             {engines}
             <h1>Your saved parts</h1>
             {savedParts}
@@ -312,6 +326,14 @@ function Home(props) {
     const setDownloadedList = (value) => {
         setDownloadedPartsList(value);
         localStorage.setItem("downloadedParts", value);
+    }
+
+    const setUsername = (value) => {
+        setUserName(value);
+        if(value !== null && value.trim() !== "")
+            setDisplayUsername(" " + value);
+            
+        localStorage.setItem("username", value);
     }
 
     const setTheme = (value) => {
@@ -357,8 +379,12 @@ function Home(props) {
                 break;
 
             case "themeCode":
-                document.getElementById("theme").innerHTML = e.target.innerHTML;
+                // document.getElementById("theme").innerHTML = e.target.innerHTML;
+                setTheme(e.target.innerHTML);
+                break;
 
+            case "username":
+                setUsername(e.target.value);
                 break;
         
             default:
@@ -444,31 +470,57 @@ function Home(props) {
         case "settings":
             content = (
                 <div className="homeContent">
-                    <h1>Settings</h1>
-                    <div>
-                        <h3>Developer Mode (Enables ID showing and such)</h3>
-                        <input type="checkbox" onChange={inputData} id="devmode" title="Developer Mode" defaultChecked={developerMode}></input>
-                        {/* <select onChange={inputData} id="launch" title="Launch Behaviour" defaultValue={launchBehaviour}> */}
-                            {/* <option value=""></option> */}
-                        {/* </select> */}
-                        <h3>Engine Simulator Catalog <a target="_blank" href="https://catalog.engine-sim.parts/user/api-tokens">API Token</a></h3>
-                        <input onChange={inputData} id="apiToken" title="API Token" defaultValue={token}></input>
-                        <h3>Custom theme file</h3>
-                        <input className="themeInput" type="file" onChange={inputData} id="themeInput" title="Theme Path"></input>
+                    <h1 className="settingsTitle">Settings</h1>
+                    <div className="settings">
+                        <div className="top">
+                            <h3>Developer Mode</h3>
+                            <p className="id">Enable Developer Mode</p>
+                            <input type="checkbox" onChange={inputData} id="devmode" title="Developer Mode" defaultChecked={developerMode}></input>
+                            {/* <select onChange={inputData} id="launch" title="Launch Behaviour" defaultValue={launchBehaviour}> */}
+                                {/* <option value=""></option> */}
+                            {/* </select> */}
 
-                        <div className="themeCode">
-                            <div className="top" id="themeCodeHeader" onClick={expandThemeCode}>
-                                <h2><pre>Theme</pre></h2>
-                                <div>
-                                    <button onClick={loadTheme}><FontAwesomeIcon icon={faDownload}/> Load</button>
-                                    <button onClick={saveTheme}><FontAwesomeIcon icon={faSave}/> Save</button>
+                            <h3>Engine Simulator Catalog <a target="_blank" href="https://catalog.engine-sim.parts/user/api-tokens">API Token</a></h3>
+                            <p className="id">Give Engine Simulator Manager access to your Engine Simulator Catalog account.</p>
+                            <input onChange={inputData} id="apiToken" title="API Token" defaultValue={token}></input>
+
+                            <h3>Username</h3>
+                            <p className="id">Tell Engine Simulator Manager how to greet you.</p>
+                            <input onChange={inputData} id="username" title="ESM Username" defaultValue={username}></input>
+
+                            <h3>Custom theme file</h3>
+                            <input className="themeInput" type="file" onChange={inputData} id="themeInput" title="Theme Path"></input>
+
+                            <div className="themeCode">
+                                <div className="top" id="themeCodeHeader" onClick={expandThemeCode}>
+                                    <h2><pre>Theme</pre></h2>
+                                    <div>
+                                        <button onClick={loadTheme}><FontAwesomeIcon icon={faDownload}/> Load</button>
+                                        <button onClick={saveTheme}><FontAwesomeIcon icon={faSave}/> Save</button>
+                                    </div>
+                                </div>
+                                <div id="themeCodeContent" className="content">
+                                    <pre onInput={inputData} id="themeCode" contentEditable autoCorrect="false" autoCapitalize="false" autoSave="false">
+
+                                    </pre>
                                 </div>
                             </div>
-                            <div id="themeCodeContent" className="content">
-                                <pre onInput={inputData} id="themeCode" contentEditable autoCorrect="false" autoCapitalize="false" autoSave="false">
+                        </div>
 
-                                </pre>
-                            </div>
+                        <div className="credits">
+                            <pre className="id">
+                                Credits:<br/>
+                                    - DDev - Main Developer<br/>
+                                    - Beacrox - Theme designer<br/>
+                                <br/>
+                                Other credits:<br/>
+                                    - AngeTheGreat - The Engine Simulator<br/>
+                                    - Developers at Catppuccin - The Catppuccin Mocha theme<br/>
+                                <br/>
+                                Debug Info:<br/>
+                                    - Version: {props.currentVersion}<br/>
+                                    - Latest Version: {props.latestVersion}<br/>
+                            </pre>
                         </div>
 
                     </div>

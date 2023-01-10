@@ -1,3 +1,19 @@
 a {
     color: #61dafb;
 }
+
+.app .errors {
+    width: 100%;
+    background-color: var(--error-color);
+    height: 44px;
+    margin: 0;
+    padding: 0px 55px;
+}
+
+.app .errors h3 {
+    margin: 0;
+}
+
+.app .errors p {
+    margin: 0;
+}

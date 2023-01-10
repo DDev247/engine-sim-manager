@@ -151,7 +151,11 @@ function Launcher(props) {
     }
 
     const launchES = (e) => {
-        fetch("http://127.0.0.1:24704/launchES");
+        if(simVersion.includes("12a") || simVersion.includes("ER04"))
+            // use new system with arguments.
+            fetch("http://127.0.0.1:24704/launchES?args=12a");
+        else // fallback to normal version (0.1.11a)
+            fetch("http://127.0.0.1:24704/launchES");
     }
 
     const redownloadAll = (e) => {

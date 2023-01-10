@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './ViewManufacturer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faTrash, faWrench } from '@fortawesome/free-solid-svg-icons';
 //import { faDownload, faStar, faTrashCan, faWrench } from '@fortawesome/free-solid-svg-icons';
 
 function ViewManufacturer(props) {
@@ -22,9 +22,41 @@ function ViewManufacturer(props) {
                     data.text().then((file) => {
                         partFile = file;
                         let mainLoading = partFile.includes("public node main");
+                        let hasEngine = partFile.includes("engine engine");
                         
+                        let nodeName = "";
+                        let engineName = "";
+
+                        partFile.replace("\r", "");
+                        let lines = partFile.split("\n");
+                        let i = 0;
+                        lines.forEach(element => {
+                            if(element.startsWith("public node")) {
+                                let line = lines[i+1];
+                                if(line.includes("alias output __out: engine;")) {
+                                    nodeName = element.split(" ")[2];
+                                }
+                            }
+                            else if(element.includes("name:")) {
+                                engineName = element.split("\"")[1];
+                            }
+                            
+                            i++;
+                        });
+                        //partFile.indexOf("public node");
+
+                        let obj = {
+                            "hasMain": mainLoading,
+                            "hasEngine": hasEngine,
+                            "name": element.substring(0, element.length-3),
+                            "path": "engines/" + props.name + "/" + element,
+                            "nodeName": nodeName,
+                            "engineName": engineName,
+                        };
+
                         // console.log(element + " => " + partFile);
-                        partData[element.substring(0, element.length-3)] = mainLoading;
+                        partData[element.substring(0, element.length-3)] = obj;
+                        //partData.list.push(obj);
                     });
                 }
             });
@@ -32,7 +64,7 @@ function ViewManufacturer(props) {
 
         setManufacturerPartData(partData);
         setManufacturerData(data);
-    }, []);
+    }, [props.name,props.userEngines]);
 
     const back = (e) => {
         props.setPage("home");
@@ -47,30 +79,108 @@ function ViewManufacturer(props) {
         <h2><pre>Loading...</pre></h2>
     );
 
-    if(manufacturerData !== undefined && manufacturerPartData !== undefined) {
-        console.log(manufacturerPartData);
+    const usePart = (e) => {
+        // TODO: When ER04 or 0.1.12 releases change this
+        // yes
         const parts = manufacturerPartData;
+        const engineName = e.target.id;
+        
+        let part = parts[engineName];
+
+        if(!part.hasEngine)
+            return;
+
+        console.log("Choosin part:");
+        console.log(part);
+
+        if(!part.hasMain) {
+            const mainMr = `import "engine_sim.mr"
+import "themes/default.mr"
+import "${part.path}"
+
+use_default_theme()
+
+set_engine(${part.nodeName}())
+set_transmission(transmission())
+set_vehicle(vehicle())
+            `;
+
+            console.log("writin: " + mainMr);
+            fetch("http://127.0.0.1:24704/saveFile?name=es/latest/assets/main.mr&data=" + btoa(mainMr));
+        }
+        else {
+            const mainMr = `import "engine_sim.mr"
+import "themes/default.mr"
+import "${part.path}"
+
+use_default_theme()
+
+main()
+`;
+
+            console.log("writin: " + mainMr);
+            fetch("http://127.0.0.1:24704/saveFile?name=es/latest/assets/main.mr&data=" + btoa(mainMr));
+        }
+    }
+
+    const deletePart = (e) => {
+
+    }
+
+    if(manufacturerData !== undefined && manufacturerPartData !== undefined) {
+        console.log("loadin parts fr\n");
+        console.log(manufacturerPartData);
+        //const parts = manufacturerPartData;
         
         let manufacturerMap = manufacturerData.map((item, key) => {
             let name = item;
+            let engineName = name.substring(0, name.length-3);
 
             if (name.length > 86) {
                 name = name.substring(0, 83) + "...";
             } // 104 - 18
             
-            
-            console.log(name.substring(0, name.length-3));
-            // this should return 'true' or 'false'
-            console.log(parts[name.substring(0, name.length-3)]);
+            /*
+            console.log(engineName);
+            let part; // = parts[engineName];
+
+            console.log("a");
+            let i = 0;
+            for(const value of parts.list) {
+                if(value.name === engineName)
+                    part = value;
+
+                // This doesn't output anything
+                // Not even a newline
+                console.log(value);
+                console.log("b");
+                //debugger;
+                i++;
+            }
+            console.log("c");
+            console.log(i);
+            // for (let index = 0; index < parts.length; index++) {
+            //     const element = parts[index];
+            //     console.log(element);
+            //     part = element;
+            // }
+            console.log(part);
+            */
             
             // this should be the value logged in the line above
             let mainLoading = manufacturerPartData[name.substring(0, name.length-3)];
 
             return (
                 <div className="manEngine engine">
-                    <h4><pre>{name}</pre></h4>
-                    <h5>By <pre>{props.name}</pre></h5>
-                    {mainLoading ? (<h6 className="id">Supports <code>main()</code> loading</h6>) : (<div/>) }
+                    <div>
+                        <h4><pre>{name}</pre></h4>
+                        <h5>By <pre>{props.name}</pre></h5>
+                        {mainLoading ? (<h6 className="id">Supports <code>main()</code> loading</h6>) : (<div/>) }
+                    </div>
+                    <div className="buttons">
+                        <button id={engineName} onClick={usePart}><FontAwesomeIcon icon={faWrench}/> Use Part</button>
+                        <button id={engineName} onClick={deletePart}><FontAwesomeIcon icon={faTrash}/> Delete Part</button>
+                    </div>
                 </div>
             );
         });

@@ -198,3 +198,18 @@
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
+
+.settingsTitle {
+    margin-bottom: 0;
+}
+
+.settings {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.settings .top .id {
+    margin: 0;
+    margin-bottom: 10px;
+}

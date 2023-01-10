@@ -167,6 +167,7 @@ const requestListener = (request, response) => {
             case "/launchES":
                 const dir = "engine-sim-app.exe";
                 let command = "";
+                let args = "";
 
                 if(platform == 'win32') {
                     command = "cd es/latest/bin/ &&";
@@ -175,8 +176,11 @@ const requestListener = (request, response) => {
                     command = "cd es/latest/bin/ && wine ";
                 }
 
-                console.log("[ SERVER ] Launching '" + command + dir + "' on platform '" + platform + "'");
-                exec(command + dir, (error, stdout, stderr) => {
+                if(url.searchParams.get("args") === "12a")
+                    args = " main.mr";
+
+                console.log("[ SERVER ] Launching '" + command + dir + args + "' on platform '" + platform + "'");
+                exec(command + dir + args, (error, stdout, stderr) => {
                     if(error) {
                         console.log(stderr);
                     }

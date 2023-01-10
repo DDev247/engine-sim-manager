@@ -12,6 +12,9 @@ function App() {
     const [tutorialDone, setTutorialDone] = useState(false);
     const [latestVersion, setLatestVersion] = useState(0);
     const [outdated, setOutdated] = useState(false);
+    const [sizeError, setSizeError] = useState(false);
+    const [sizeX, setSizeX] = useState(0);
+    const [sizeY, setSizeY] = useState(0);
     const currentVersion = 0.1;
 
     const setTutorial = () => {
@@ -44,11 +47,48 @@ function App() {
         else {
             document.title = "Engine Simulator Manager v" + currentVersion;
         }
+
+        setSizeX(window.innerWidth);
+        setSizeY(window.innerHeight);
+        if(window.innerWidth < 800) {
+            setSizeError(true);
+        }
+        if(window.innerHeight < 600) {
+            setSizeError(true);
+        }
     }, []);
+
+    let sizeErrorDiv = (<div/>);
+
+    window.onresize = () => {
+        setSizeX(window.innerWidth);
+        setSizeY(window.innerHeight);
+        let error = false;
+        if(window.innerWidth < 800) {
+            setSizeError(true);
+            error = true;
+        }
+        if(window.innerHeight < 600) {
+            setSizeError(true);
+            error = true;
+        }
+
+        // console.log(error);
+        if(error) {
+            sizeErrorDiv = (<div className="errors">
+                <h3>Warning:</h3>
+                <p>Window size is smaller than 800x600 (currently: {sizeX}x{sizeY})</p>
+            </div>);
+        }
+        else {
+            sizeErrorDiv = (<div></div>);
+        }
+    }
 
     if(tutorialDone) {
         return (
             <div className="app">
+                {sizeErrorDiv}
                 <Home latestVersion={latestVersion} currentVersion={currentVersion} outdated={outdated}/>
                 <PopupManager outdated={outdated}/>
             </div>
