@@ -78,6 +78,18 @@ function Launcher(props) {
                     });
                 });
             }
+        }).then(() => {
+            if(props.launchInstant) {
+                if(simVersion === "unknown") {
+                    // install ES
+                    installLatest(undefined);
+                    launchES(undefined);
+                }
+                else { 
+                    // launch ES
+                    launchES(undefined);
+                }
+            }
         });
     });
 
@@ -171,18 +183,6 @@ function Launcher(props) {
             return null;
         });
         fetchUserEngines();
-    }
-
-    if(props.launchInstant) {
-        if(simVersion === "unknown") {
-            // install ES
-            installLatest(undefined);
-            launchES(undefined);
-        }
-        else { 
-            // launch ES
-            launchES(undefined);
-        }
     }
 
     let userPartsMap = [<div className="engine">

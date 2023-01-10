@@ -177,7 +177,7 @@ const requestListener = (request, response) => {
                 }
 
                 if(url.searchParams.get("args") === "12a")
-                    args = " main.mr";
+                    args = " ../assets/main.mr";
 
                 console.log("[ SERVER ] Launching '" + command + dir + args + "' on platform '" + platform + "'");
                 exec(command + dir + args, (error, stdout, stderr) => {
