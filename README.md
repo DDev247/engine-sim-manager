@@ -23,7 +23,12 @@ The program uses a Node.js server to communicate between the front-end(what you 
 # Developer Info
 
 ## How do I run it?
-First install `node` using your package manager or from [Node's official site](https://nodejs.org)
+First install `node` using your package manager or from [Node's official site](https://nodejs.org).
+After installing `node` run
+
+    npm install
+
+to install the necessary packages. If you got an error while running that command, your installation may be broken or not include `npm` in `PATH`.
 
 ### To start the React Development Server and Electron use
 
