@@ -109,9 +109,32 @@ function Launcher(props) {
         }
     }
 
-    const installLatest = (e) => {
+    const installLegacy = (e) => {
         // get latest version from github
         fetch("https://api.github.com/repos/ange-yaghi/engine-sim/releases").then((data) => {
+            data.json().then((json) => {
+                const dat = json[0];
+                const link = dat.assets[0].browser_download_url;
+                const ver = "legacy_" + dat.tag_name;
+                console.log(dat);
+                
+                fetch("http://127.0.0.1:24704/downloadES?link=" + link).then((data) => {
+                    fetch("http://127.0.0.1:24704/unpackES?from=es/packed/latest.zip&to=es/latest").then((data) => {
+                        fetch("http://127.0.0.1:24704/saveFile?name=es/version.txt&data=" + btoa(ver)).then((response) => {
+                            response.text().then((data) => {
+                                console.log("Done saving version: " + data);
+                                setSimVersion(ver);
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
+
+    const installLatest = (e) => {
+        // get latest version from github
+        fetch("https://api.github.com/repos/Engine-Simulator/engine-sim-community-edition/releases").then((data) => {
             data.json().then((json) => {
                 const dat = json[0];
                 const link = dat.assets[0].browser_download_url;
@@ -143,7 +166,7 @@ function Launcher(props) {
 
         input.onchange = e => { 
             var file = e.target.files[0]; 
-            const ver = file.name.split(".")[0].replace(" ", "_");
+            const ver = "custom_" + file.name.split(".")[0].replace(" ", "_");
             const path = file.path;
 
             // console.log(file.path);
@@ -163,11 +186,12 @@ function Launcher(props) {
     }
 
     const launchES = (e) => {
-        if(simVersion.includes("12a") || simVersion.includes("ER04"))
+        if(simVersion.startsWith("legacy"))
+            // fallback to normal version (0.1.11a)
+            fetch("http://127.0.0.1:24704/launchES");
+        else 
             // use new system with arguments.
             fetch("http://127.0.0.1:24704/launchES?args=12a");
-        else // fallback to normal version (0.1.11a)
-            fetch("http://127.0.0.1:24704/launchES");
     }
 
     const redownloadAll = (e) => {
@@ -279,27 +303,67 @@ function Launcher(props) {
         );
     }
 
+    let titleElement = (
+        <h3>Engine Simulator</h3>
+    );
+
+    let descriptionElement = (
+        <h5><pre>The community (closed-source) Engine Simulator.</pre></h5>
+    );
+
+    if(simVersion.startsWith("legacy")) {
+        titleElement = (<h3>Legacy Engine Simulator</h3>);
+        descriptionElement = (<h5><pre>The legacy (open-source) Engine Simulator.</pre></h5>);
+    } else if(simVersion.startsWith("custom")) {
+        titleElement = (<h3>Custom Engine Simulator</h3>);
+        descriptionElement = (<h5><pre>Custom Engine Simulator.</pre></h5>);
+    }
+
     let pageContent = (
         <div>
             <h1>Engine Simulator Launcher</h1>
             <pre className="id">Tip: Right-click the icon to launch the Engine Simulator instantly.</pre>
             <h2>Your Installation</h2>
             <div className="installation">
-                <img width={100} alt="logo" src={es_logo}/>
+                <img width={140} alt="logo" src={es_logo}/>
                 <div className="text">
-                    <h3>Engine Simulator</h3>
+                    {titleElement}
                     <h4>Version: <pre> {simVersion}</pre></h4>
+                    {descriptionElement}
                 </div>
                     {simVersion === "unknown" ? (
                         <div className="buttons">
                             <button onClick={installLatest}><FontAwesomeIcon icon={faDownload}/> Install Latest Version</button>
-                            <button onClick={installOther}><FontAwesomeIcon icon={faQuestion}/> Install Different Version</button>
+                            <button onClick={installLegacy}><FontAwesomeIcon icon={faDownload}/> Install Legacy Version</button>
+                            <button onClick={installOther}><FontAwesomeIcon icon={faQuestion}/> Install Custom Version</button>
                         </div>
                     ) : (
                         <div className="buttons">
                             <button onClick={launchES}><FontAwesomeIcon icon={faRocket}/> Launch</button>
-                            <button onClick={installLatest}><FontAwesomeIcon icon={faRedo}/> Reinstall</button>
-                            <button onClick={installOther}><FontAwesomeIcon icon={faQuestion}/> Install Different Version</button>
+                            { !simVersion.startsWith("custom") && !simVersion.startsWith("legacy") ? (
+                                <button onClick={installLatest}><FontAwesomeIcon icon={faRedo}/> Reinstall</button>
+                            ) : (<span/>) }
+
+                            { simVersion.startsWith("custom") ? (
+                                <button onClick={installOther}><FontAwesomeIcon icon={faRedo}/> Reinstall</button>
+                            ) : (<span/>)}
+                            { simVersion.startsWith("custom") ? (
+                                <button onClick={installLatest}><FontAwesomeIcon icon={faDownload}/> Install Latest Version</button>
+                            ) : (<span/>)}
+
+                            { !simVersion.startsWith("legacy") ? (
+                                <button onClick={installLegacy}><FontAwesomeIcon icon={faDownload}/> Install Legacy Version</button>
+                            ) : (
+                                <button onClick={installLegacy}><FontAwesomeIcon icon={faRedo}/> Reinstall</button>
+                            ) }
+
+                            { simVersion.startsWith("legacy") ? (
+                                <button onClick={installLatest}><FontAwesomeIcon icon={faDownload}/> Install Latest Version</button>
+                            ) : (<span/>)}
+
+                            { !simVersion.startsWith("custom") ? (
+                                <button onClick={installOther}><FontAwesomeIcon icon={faQuestion}/> Install Custom Version</button>
+                            ) : (<span/>) }
                         </div>
                     )}
                     

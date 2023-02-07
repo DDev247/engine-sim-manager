@@ -46,3 +46,16 @@
     border-radius: 10px;
     scale: 1.1;
 }
+
+.sidebarItem.upload .catalogIcon {
+    position: relative;
+    left: 5px;
+}
+.sidebarItem.upload .uploadIcon {
+    position: relative;
+    scale: 0.75;
+    top: 5px;
+    right: 5px;
+    color: var(--upload-icon-color);
+    /* left: 10px; */
+}

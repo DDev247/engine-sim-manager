@@ -7,7 +7,6 @@ const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
 const url = require('url');
-const open = require('open');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -19,6 +18,36 @@ const { platform } = require('os');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let server;
+let startTime;
+
+const getUptime = () => {
+    let time = (Date.now()-startTime)/1000;
+    let timeMajor = (Date.now()-startTime)/1000;
+    let useMajorTime = false;
+    let timeUnit = "seconds";
+    let majorTimeUnit = "seconds";
+    
+    if(time >= 60) {
+        time %= 60; // how many seconds in a minute
+
+        useMajorTime = true;
+        timeMajor /= 60; // minutes        
+        majorTimeUnit = "minutes";
+    }
+
+    if(timeMajor >= 60) {
+        time %= 60; // how many minutes in the hour
+        timeUnit = "minutes";
+        
+        useMajorTime = true;
+        timeMajor /= 60; // minutes => hours
+        majorTimeUnit = "hours";
+    }
+
+    let timeMajorString = Math.round(timeMajor).toString() + " " + majorTimeUnit + " ";
+
+    return `Uptime: ${useMajorTime ? timeMajorString : ""}${Math.round(time)} ${timeUnit}`;
+}
 
 const requestListener = (request, response) => {
     console.log("[ SERVER ] Recieved request: origin: '" + request.headers.origin + "' path: '" + request.url + "'");
@@ -171,21 +200,48 @@ const requestListener = (request, response) => {
 
                 if(platform == 'win32') {
                     command = "cd es/latest/bin/ &&";
+
+                    if(url.searchParams.get("args") === "12a")
+                        args = " ../assets/main.mr";
+
+                    console.log("[ SERVER ] Launching '" + command + dir + args + "' on platform '" + platform + "'");
+                    exec(command + dir + args, (error, stdout, stderr) => {
+                        if(error) {
+                            console.log(stderr);
+                        }
+                        console.log(stdout);
+                    });
                 }
                 else if(platform == 'linux' || platform == 'darwin') {
-                    command = "cd es/latest/bin/ && wine ";
-                }
+                    const run = () => {
+                        command = "sh ./runWine.sh";
 
-                if(url.searchParams.get("args") === "12a")
-                    args = " ../assets/main.mr";
+                        if(url.searchParams.get("args") === "12a")
+                            args = " ../assets/main.mr";
 
-                console.log("[ SERVER ] Launching '" + command + dir + args + "' on platform '" + platform + "'");
-                exec(command + dir + args, (error, stdout, stderr) => {
-                    if(error) {
-                        console.log(stderr);
+                        console.log("[ SERVER ] Launching '" + command + args + "' on platform '" + platform + "'");
+                        exec(command + args, (error, stdout, stderr) => {
+                            if(error) {
+                                console.log(stderr);
+                            }
+                            console.log(stdout);
+                        });
                     }
-                    console.log(stdout);
-                });
+
+                    if(!fs.existsSync("setup.txt")) {
+                        // create prefix
+                        exec("sh ./setupWine.sh", (error, stdout, stderr) => {
+                            if(error) {
+                                console.log(stderr);
+                            }
+                            console.log(stdout);
+                            run();
+                        });
+                    }
+                    else {
+                        run();
+                    }
+                }
 
                 response.writeHead(200, "OK", { 'Access-Control-Allow-Origin': '*' });
                 response.end("No response message.");
@@ -201,6 +257,11 @@ const requestListener = (request, response) => {
                     \nAvailable commands (prefix: '/'): 'status', 'deleteDirectory', 'deleteDir', 'deleteFile', 'saveFile', 'savePart', 'getFile'`
                     );
                 console.log("[ SERVER ] 200: OK");
+                break;
+
+            case "/uptime":
+                response.writeHead(200, "OK", { 'Access-Control-Allow-Origin': '*' });
+                response.end("Uptime: " + getUptime());
                 break;
 
             case "/getFolder":
@@ -286,6 +347,7 @@ function createWindow() {
     });
     
     console.log("[ SERVER ] Listening on port: 24704");
+    startTime = Date.now();
     server.listen(24704);
 }
 

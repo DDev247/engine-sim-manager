@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './ViewManufacturer.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faTrash, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faTrash, faUpload, faWrench } from '@fortawesome/free-solid-svg-icons';
 //import { faDownload, faStar, faTrashCan, faWrench } from '@fortawesome/free-solid-svg-icons';
 
 function ViewManufacturer(props) {
@@ -179,6 +179,7 @@ main()
                     </div>
                     <div className="buttons">
                         <button id={engineName} onClick={usePart}><FontAwesomeIcon icon={faWrench}/> Use Part</button>
+                        {/* <button id={engineName} onClick={uploadPart}><FontAwesomeIcon icon={faUpload}/> Upload Part</button> */}
                         <button id={engineName} onClick={deletePart}><FontAwesomeIcon icon={faTrash}/> Delete Part</button>
                     </div>
                 </div>

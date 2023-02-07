@@ -74,6 +74,8 @@
     --download-icon-color: var(--Subtext0);
     --starred-icon-color: var(--Yellow);
 
+    --upload-icon-color: var(--Blue);
+
     /* --error-color: var(--Red); */
     --error-color: red;
 }

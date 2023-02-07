@@ -19,6 +19,8 @@ function Home(props) {
     const [themeCode, setThemeCode] = useState("");
     const [username, setUserName] = useState("");
     const [displayUsername, setDisplayUsername] = useState("");
+    const [serverStatus, setServerStatus] = useState("");
+    const [serverUptime, setServerUptime] = useState("");
 
     // Changes the page and scrolls to the top.
     const changePage = (page) => {
@@ -77,6 +79,19 @@ function Home(props) {
         if(usern !== null && usern.trim() !== "")
             setDisplayUsername(" " + usern);
     }, []);
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:24704/status").then((data) => {
+            data.text().then((text) => {
+                setServerStatus(text);
+            });
+        });
+        fetch("http://127.0.0.1:24704/uptime").then((data) => {
+            data.text().then((text) => {
+                setServerUptime(text);
+            });
+        });
+    });
 
     // Loads the latest parts from the Parts Catalog.
     // WARNING: Currently broken.
@@ -520,6 +535,9 @@ function Home(props) {
                                 Debug Info:<br/>
                                     - Version: {props.currentVersion}<br/>
                                     - Latest Version: {props.latestVersion}<br/>
+                                Server Info:<br/>
+                                    - {serverUptime}<br/>
+                                    - Status: {serverStatus}<br/>
                             </pre>
                         </div>
 

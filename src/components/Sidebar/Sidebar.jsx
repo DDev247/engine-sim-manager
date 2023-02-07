@@ -1,6 +1,6 @@
 import './Sidebar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGear, faHome, faRocket, faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons';
+import { faUpload, faGear, faHome, faRocket, faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons';
 
 function Sidebar(props) {
     const changePage = (e) => {

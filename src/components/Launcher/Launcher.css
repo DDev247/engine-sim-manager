@@ -42,11 +42,24 @@
     flex-grow: 1;
 }
 
+.installation .text h4 {
+    margin-bottom: 5px;
+}
+
+.installation .text h5,
+.installation .text pre {
+    margin: 0;
+}
+
 .installation .buttons {
     display: flex;
     flex-direction: column;
     gap: 5px;
     justify-content: center;
+}
+
+.installation .buttons span {
+    display: none;
 }
 
 .installation .buttons button {
