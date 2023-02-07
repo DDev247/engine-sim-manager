@@ -1,4 +1,4 @@
-
+# Maintainer: DDev247 <ddev247.work@gmail.com>
 pkgname="esmanager"
 pkgrel=1
 pkgver="0.1"
@@ -11,17 +11,20 @@ depends=('nodejs>=16.19.0' 'npm>=8.19.2')
 makedepends=(git)
 
 package() {
-	echo "Cloning the repo (this can take a while)..."
+	echo "====> Cloning the repo (this can take a while)..."
 
 	# clone the repo
+	rm -rf ${srcdir}/gitsource
 	git clone https://github.com/DDev247/engine-sim-manager.git ${srcdir}/gitsource
 	
-	echo "Clone done..."
+	echo "====> Clone done..."
+	echo "====> Installing NPM packages (this takes a while)..."
+
 	# install npm packages
 	npm install --prefix ${srcdir}/gitsource
 
-	echo "NPM install done..."
-	echo "Packing (this can take a while)..."
+	echo "====> NPM install done..."
+	echo "====> Packing (this can take a while)..."
 	
 	# run react build
 	npm run build --prefix ${srcdir}/gitsource
@@ -31,17 +34,21 @@ package() {
 	mkdir -p ${srcdir}/gitsource/bin
 
 	# pack electron
-	npx --prefix ${srcdir}/gitsource electron-packager . esmanager --ignore="/src|/public|README|Procfile|.gitignore|pack.sh|/es" --arch="x64" --platform="linux" --out="bin"
+	command="cd ${srcdir}/gitsource && npx electron-packager . esmanager --ignore=\"/src|/public|README|Procfile|.gitignore|pack.sh|/es\" --arch=\"x64\" --platform=\"linux\" --out=\"bin\" && exit 0"
+	echo $command | sh
 	
-	echo "Packing done..."
-	echo "Copying files..."
+	echo "====> Packing done..."
+	echo "====> Copying files..."
 	cp -r ${srcdir}/gitsource/src/themes ${srcdir}/gitsource/bin/*/
-	cp ${srcdir}/gitsource/build/static/media ${srcdir}/gitsource/bin/esmanager-linux-x64/resources/app/build/static
+	cp -r ${srcdir}/gitsource/build/static/media ${srcdir}/gitsource/bin/esmanager-linux-x64/resources/app/build/static
 
-	echo "Symlink binary..."
-	mkdir ${pkgdir}/usr/bin/esmanager
+	echo "====> Symlink binary..."
+	mkdir -p ${pkgdir}/usr/bin
 	
 	# Symlink the bin folder to /usr/bin/esmanager
+	# (bypass for weird behaviour where folder gets linked :shrug:)
 	ln -s ${srcdir}/gitsource/bin/esmanager-linux-x64/esmanager ${pkgdir}/usr/bin/esmanager
+
+	echo "====> Done!"
 }
 
