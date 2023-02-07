@@ -11,8 +11,37 @@ depends=('nodejs>=16.19.0' 'npm>=8.19.2')
 makedepends=(git)
 
 package() {
+	echo "Cloning the repo (this can take a while)..."
+
+	# clone the repo
 	git clone https://github.com/DDev247/engine-sim-manager.git ${srcdir}/gitsource
+	
 	echo "Clone done..."
-	${srcdir}/gitsource/pack.sh
+	# install npm packages
+	npm install --prefix ${srcdir}/gitsource
+
+	echo "NPM install done..."
+	echo "Packing (this can take a while)..."
+	
+	# run react build
+	npm run build --prefix ${srcdir}/gitsource
+
+	# remove previous build just in case
+	rm -rf ${srcdir}/gitsource/bin/*
+	mkdir -p ${srcdir}/gitsource/bin
+
+	# pack electron
+	npx --prefix ${srcdir}/gitsource electron-packager . esmanager --ignore="/src|/public|README|Procfile|.gitignore|pack.bash|/es" --arch="x64" --platform="linux" --out="bin"
+	
+	echo "Packing done..."
+	echo "Copying files..."
+	cp -r ${srcdir}/gitsource/src/themes ${srcdir}/gitsource/bin/*/
+	cp ${srcdir}/gitsource/build/static/media ${srcdir}/gitsource/bin/es-manager-linux-x64/resources/app/build/static
+
+	echo "Symlink binary..."
+	mkdir ${pkgdir}/usr/bin/esmanager
+	
+	# Symlink the bin folder to /usr/bin/esmanager
+	ln -s ${srcdir}/gitsource/bin/es-manager-linux-x64/es-manager ${pkgdir}/usr/bin/esmanager
 }
 
