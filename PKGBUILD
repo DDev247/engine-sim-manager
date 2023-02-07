@@ -31,17 +31,17 @@ package() {
 	mkdir -p ${srcdir}/gitsource/bin
 
 	# pack electron
-	npx --prefix ${srcdir}/gitsource electron-packager . esmanager --ignore="/src|/public|README|Procfile|.gitignore|pack.bash|/es" --arch="x64" --platform="linux" --out="bin"
+	npx --prefix ${srcdir}/gitsource electron-packager . esmanager --ignore="/src|/public|README|Procfile|.gitignore|pack.sh|/es" --arch="x64" --platform="linux" --out="bin"
 	
 	echo "Packing done..."
 	echo "Copying files..."
 	cp -r ${srcdir}/gitsource/src/themes ${srcdir}/gitsource/bin/*/
-	cp ${srcdir}/gitsource/build/static/media ${srcdir}/gitsource/bin/es-manager-linux-x64/resources/app/build/static
+	cp ${srcdir}/gitsource/build/static/media ${srcdir}/gitsource/bin/esmanager-linux-x64/resources/app/build/static
 
 	echo "Symlink binary..."
 	mkdir ${pkgdir}/usr/bin/esmanager
 	
 	# Symlink the bin folder to /usr/bin/esmanager
-	ln -s ${srcdir}/gitsource/bin/es-manager-linux-x64/es-manager ${pkgdir}/usr/bin/esmanager
+	ln -s ${srcdir}/gitsource/bin/esmanager-linux-x64/esmanager ${pkgdir}/usr/bin/esmanager
 }
 
