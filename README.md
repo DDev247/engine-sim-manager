@@ -14,6 +14,8 @@ It fetches data from the [Parts Catalog](https://catalog.engine-sim.parts) and u
 
 ## How do I download it?
 You can download the latest version from the [Releases page](https://github.com/DDev247/engine-sim-manager/releases).
+### ARCH LINUX USERS ONLY:
+Download the [PKGBUILD](https://github.com/DDev247/engine-sim-manager/blob/master/PKGBUILD) and use `makepkg -si` to build the project from the latest commit.
 
 # Technical details
 
