@@ -16,7 +16,6 @@ package() {
 	    then
 		_containsSource=true
 	fi
-	echo $_containsSource
 
 	if [ $_containsSource = false ]
 	    then
