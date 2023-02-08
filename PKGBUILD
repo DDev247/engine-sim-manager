@@ -11,44 +11,78 @@ depends=('nodejs>=16.19.0' 'npm>=8.19.2')
 makedepends=(git)
 
 package() {
-	echo "====> Cloning the repo (this can take a while)..."
-
-	# clone the repo
-	rm -rf ${srcdir}/gitsource
-	git clone https://github.com/DDev247/engine-sim-manager.git ${srcdir}/gitsource
+	_containsSource=false
+	if [[ -f "index.js" ]] then
+		_containsSource=true
+	fi
 	
-	echo "====> Clone done..."
-	echo "====> Installing NPM packages (this takes a while)..."
+	if !_containsSource then
+		echo "====> Cloning the repo (this can take a while)..."
 
-	# install npm packages
-	npm install --prefix ${srcdir}/gitsource
-
-	echo "====> NPM install done..."
-	echo "====> Packing (this can take a while)..."
+		# clone the repo
+		rm -rf ${srcdir}/gitsource
+		git clone https://github.com/DDev247/engine-sim-manager.git ${srcdir}/gitsource
 	
-	# run react build
-	npm run build --prefix ${srcdir}/gitsource
+		echo "====> Clone done..."
+		echo "====> Installing NPM packages (this takes a while)..."
 
-	# remove previous build just in case
-	rm -rf ${srcdir}/gitsource/bin/*
-	mkdir -p ${srcdir}/gitsource/bin
+		# install npm packages
+		npm install --prefix ${srcdir}/gitsource
 
-	# pack electron
-	command="cd ${srcdir}/gitsource && npx electron-packager . esmanager --ignore=\"/src|/public|README|Procfile|.gitignore|pack.sh|/es\" --arch=\"x64\" --platform=\"linux\" --out=\"bin\" && exit 0"
-	echo $command | sh
+		echo "====> Installing NPM packages done..."
+		echo "====> Packing (this can take a while)..."
 	
-	echo "====> Packing done..."
-	echo "====> Copying files..."
-	cp -r ${srcdir}/gitsource/src/themes ${srcdir}/gitsource/bin/*/
-	cp -r ${srcdir}/gitsource/build/static/media ${srcdir}/gitsource/bin/esmanager-linux-x64/resources/app/build/static
+		# run react build
+		npm run build --prefix ${srcdir}/gitsource
 
-	echo "====> Symlink binary..."
-	mkdir -p ${pkgdir}/usr/bin
+		# remove previous build just in case
+		rm -rf ${srcdir}/gitsource/bin/*
+		mkdir -p ${srcdir}/gitsource/bin
+
+		# pack electron
+		command="cd ${srcdir}/gitsource && npx electron-packager . esmanager --ignore=\"/src|/public|README|Procfile|.gitignore|pack.sh|/es\" --arch=\"x64\" --platform=\"linux\" --out=\"bin\" && exit 0"
+		echo $command | sh
 	
-	# Symlink the bin folder to /usr/bin/esmanager
-	# (bypass for weird behaviour where folder gets linked :shrug:)
-	ln -s ${srcdir}/gitsource/bin/esmanager-linux-x64/esmanager ${pkgdir}/usr/bin/esmanager
+		echo "====> Packing done..."
+		echo "====> Copying files..."
+		cp -r ${srcdir}/gitsource/src/themes ${srcdir}/gitsource/bin/*/
+		cp -r ${srcdir}/gitsource/build/static/media ${srcdir}/gitsource/bin/esmanager-linux-x64/resources/app/build/static
 
-	echo "====> Done!"
+		echo "====> Symlink binary..."
+		mkdir -p ${pkgdir}/usr/bin
+	
+		# Symlink the bin folder to /usr/bin/esmanager
+		ln -s ${srcdir}/gitsource/bin/esmanager-linux-x64/esmanager ${pkgdir}/usr/bin/esmanager
+	
+		echo "====> Done!"
+	else
+		echo "====> Pulling Git repo..."
+		
+		git pull
+		
+		echo "====> Pull done..."
+		echo "====> Installing NPM packages (this can take a while)..."
+
+		# install electron, react, etc.
+		npm install
+
+		echo "====> Installing NPM packages done..."
+		echo "====> Packing (this can take a while)..."
+		
+		npx electron-packager . esmanager --ignore="/src|/public|README|Procfile|.gitignore|pack.sh|/es" --arch="x64" --platform="linux" --out="bin"
+
+		echo "====> Packing done..."
+		echo "====> Copying files..."
+
+		cp -r ./src/themes ./bin/*/
+		cp -r ./src/build/static/media ./bin/esmanager-linux-x64/resources/app/build/static
+
+		echo "====> Symlink binary..."
+		mkdir -p ${pkgdir}/usr/bin
+		
+		ln -s ./bin/esmanager-linux-x64/esmanager ${pkgdir}/usr/bin/esmanager
+
+		echo "====> Done!"
+	fi
 }
 
