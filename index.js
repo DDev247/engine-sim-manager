@@ -19,6 +19,7 @@ const { platform } = require('os');
 let mainWindow;
 let server;
 let startTime;
+let launchedAsPkg = false;
 
 const getUptime = () => {
     let time = (Date.now()-startTime)/1000;
@@ -59,7 +60,7 @@ const requestListener = (request, response) => {
         switch (url.pathname) {
             case "/getFile":
                 // Read file and return it
-                fs.readFile(url.searchParams.get('name'), (err, data) => {
+                fs.readFile(__dirname + "/" + url.searchParams.get('name'), (err, data) => {
                     if(err) {
                         response.writeHead(500, "Server Error", { 'Access-Control-Allow-Origin': '*' });
                         response.end("Server error: Error while reading file: '" + err.message + "'");
@@ -77,7 +78,7 @@ const requestListener = (request, response) => {
             case "/saveFile":
                 // Save file
                 const data = atob(url.searchParams.get('data'));
-                fs.writeFile(url.searchParams.get('name'), data, (err) => {
+                fs.writeFile(__dirname + "/" + url.searchParams.get('name'), data, (err) => {
                     if(err) {
                         response.writeHead(500, "Server Error", { 'Access-Control-Allow-Origin': '*' });
                         response.end("Server error: Error while writing file: '" + err.message + "'");
@@ -93,7 +94,7 @@ const requestListener = (request, response) => {
                 break;
 
             case "/savePart":
-                const saveFileName = url.searchParams.get('name');
+                const saveFileName = __dirname + "/" + url.searchParams.get('name');
                 https.get("https://catalog.engine-sim.parts/api/parts/" + url.searchParams.get('id'), (resp) => {
                     let data = '';
 
@@ -125,7 +126,7 @@ const requestListener = (request, response) => {
                 break;
 
             case "/deleteFile":
-                const deleteFileName = url.searchParams.get('name');
+                const deleteFileName = __dirname + "/" + url.searchParams.get('name');
                 fs.rm(deleteFileName, (err) => {
                     if(err) {
                         response.writeHead(500, "Server Error", { 'Access-Control-Allow-Origin': '*' });
@@ -142,7 +143,7 @@ const requestListener = (request, response) => {
                 break;
 
             case "/deleteDirectory" || "/deleteDir":
-                const deleteDirectoryName = url.searchParams.get('name');
+                const deleteDirectoryName = __dirname + "/" + url.searchParams.get('name');
                 fs.rmdir(deleteDirectoryName, {recursive: true}, (err) => {
                     if(err) {
                         response.writeHead(500, "Server Error", { 'Access-Control-Allow-Origin': '*' });
@@ -160,7 +161,7 @@ const requestListener = (request, response) => {
             
             case "/downloadES":
                 const link = url.searchParams.get('link');
-                const dest = "es/packed/latest.zip";
+                const dest = __dirname + "/es/packed/latest.zip";
                 fs.promises.mkdir(path.dirname(dest), {recursive: true}).then((x) => {
                     exec("curl -L -o " + dest + " " + link, (error, stdout, stderr) => {
                         if(error) {
@@ -183,9 +184,11 @@ const requestListener = (request, response) => {
                 break;
             
             case "/unpackES":
-                const from = url.searchParams.get('from');
+                let from = url.searchParams.get('from');
+		if (from.startsWith("/"))
+		    from = __dirname + "/" + from;
                 const to = url.searchParams.get('to');
-                decompress(from, to, { strip:1 }).then((files) => {
+                decompress(from, __dirname + "/" + to, { strip:1 }).then((files) => {
                     console.log(files);
                     response.writeHead(200, "OK", { 'Access-Control-Allow-Origin': '*' });
                     response.end("No response message.");
@@ -205,7 +208,9 @@ const requestListener = (request, response) => {
                         args = " ../assets/main.mr";
 
                     console.log("[ SERVER ] Launching '" + command + dir + args + "' on platform '" + platform + "'");
-                    exec(command + dir + args, (error, stdout, stderr) => {
+                    exec(command + dir + args,{
+                         cwd: __dirname
+		    }, (error, stdout, stderr) => {
                         if(error) {
                             console.log(stderr);
                         }
@@ -220,7 +225,9 @@ const requestListener = (request, response) => {
                             args = " ../assets/main.mr";
 
                         console.log("[ SERVER ] Launching '" + command + args + "' on platform '" + platform + "'");
-                        exec(command + args, (error, stdout, stderr) => {
+                        exec(command + args, {
+                            cwd: __dirname
+                        } (error, stdout, stderr) => {
                             if(error) {
                                 console.log(stderr);
                             }
@@ -228,9 +235,11 @@ const requestListener = (request, response) => {
                         });
                     }
 
-                    if(!fs.existsSync("setup.txt")) {
+                    if(!fs.existsSync(__dirname + "/setup.txt")) {
                         // create prefix
-                        exec("sh ./setupWine.sh", (error, stdout, stderr) => {
+                        exec("sh ./setupWine.sh", {
+			    cwd: __dirname
+			}, (error, stdout, stderr) => {
                             if(error) {
                                 console.log(stderr);
                             }
@@ -266,7 +275,7 @@ const requestListener = (request, response) => {
 
             case "/getFolder":
                 const name = url.searchParams.get('name');
-                fs.readdir(name, (err, files) => {
+                fs.readdir(__dirname + "/" + name, (err, files) => {
                     if(err) {
                         response.writeHead(500, "Server Error", { 'Access-Control-Allow-Origin': '*' });
                         response.end("Server error: Error while deleting directory: '" + err.message + "'");
@@ -301,6 +310,11 @@ const requestListener = (request, response) => {
 }
 
 function createWindow() {
+    installedAsPkg = process.argv[0] == "/usr/bin/esmanager" || process.argv[0] == "esmanager";
+    if(process.platform != "linux")
+	installedAsPkg = false;
+
+
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 800,
@@ -328,7 +342,7 @@ function createWindow() {
         mainWindow.webContents.executeJavaScript(code);
     });
 
-    fs.promises.mkdir("es", {recursive: true});
+    fs.promises.mkdir(__dirname + "/es", {recursive: true});
 
     server = http.createServer(requestListener);
 
