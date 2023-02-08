@@ -1,6 +1,6 @@
 # Maintainer: DDev247 <ddev247.work@gmail.com>
 pkgname="esmanager"
-pkgrel=4
+pkgrel=5
 pkgver="0.1"
 pkgdesc="A Manager for the Engine Simulator by Ange Yaghi"
 url="https://github.com/DDev247/engine-sim-manager"
@@ -12,11 +12,13 @@ makedepends=(git)
 
 package() {
 	_containsSource=false
-	if [[ -f "index.js" ]] then
+	if [[ -f "index.js" ]]
+	    then
 		_containsSource=true
 	fi
 	
-	if !_containsSource then
+	if !_containsSource
+	    then
 		echo "====> Cloning the repo (this can take a while)..."
 
 		# clone the repo
