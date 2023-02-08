@@ -1,6 +1,6 @@
 # Maintainer: DDev247 <ddev247.work@gmail.com>
 pkgname="esmanager"
-pkgrel=5
+pkgrel=6
 pkgver="0.1"
 pkgdesc="A Manager for the Engine Simulator by Ange Yaghi"
 url="https://github.com/DDev247/engine-sim-manager"
@@ -16,8 +16,8 @@ package() {
 	    then
 		_containsSource=true
 	fi
-	
-	if [ ! _containsSource ]
+
+	if [ ! $_containsSource ]
 	    then
 		echo "====> Cloning the repo (this can take a while)..."
 
@@ -58,6 +58,7 @@ package() {
 	
 		echo "====> Done!"
 	else
+		echo "====> WARNING: Git root support is currently in developement!"
 		echo "====> Pulling Git repo..."
 		
 		git pull
@@ -70,14 +71,20 @@ package() {
 
 		echo "====> Installing NPM packages done..."
 		echo "====> Packing (this can take a while)..."
-		
-		npx electron-packager . esmanager --ignore="/src|/public|README|Procfile|.gitignore|pack.sh|/es" --arch="x64" --platform="linux" --out="bin"
+
+		cd ..
+		npm run build
+
+		rm -rf ./bin/*
+		mkdir -p ./bin
+
+		npx electron-packager ./ esmanager --ignore="/src|/public|README|Procfile|.gitignore|pack.sh|/es" --arch="x64" --platform="linux" --out="bin"
 
 		echo "====> Packing done..."
 		echo "====> Copying files..."
 
 		cp -r ./src/themes ./bin/*/
-		cp -r ./src/build/static/media ./bin/esmanager-linux-x64/resources/app/build/static
+		cp -r ./build/static/media ./bin/esmanager-linux-x64/resources/app/build/static
 
 		echo "====> Symlink binary..."
 		mkdir -p ${pkgdir}/usr/bin
