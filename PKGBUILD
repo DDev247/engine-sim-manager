@@ -18,7 +18,7 @@ package() {
 	fi
 	echo $_containsSource
 
-	if !$_containsSource;
+	if [ $_containsSource = false ]
 	    then
 		echo "====> Cloning the repo (this can take a while)..."
 
