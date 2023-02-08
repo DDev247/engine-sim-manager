@@ -185,7 +185,7 @@ const requestListener = (request, response) => {
             
             case "/unpackES":
                 let from = url.searchParams.get('from');
-		if (from.startsWith("/"))
+		if (!from.startsWith("/"))
 		    from = __dirname + "/" + from;
                 const to = url.searchParams.get('to');
                 decompress(from, __dirname + "/" + to, { strip:1 }).then((files) => {

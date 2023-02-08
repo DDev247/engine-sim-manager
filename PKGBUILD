@@ -1,6 +1,6 @@
 # Maintainer: DDev247 <ddev247.work@gmail.com>
 pkgname="esmanager"
-pkgrel=3
+pkgrel=4
 pkgver="0.1"
 pkgdesc="A Manager for the Engine Simulator by Ange Yaghi"
 url="https://github.com/DDev247/engine-sim-manager"
