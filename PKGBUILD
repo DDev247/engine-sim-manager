@@ -17,7 +17,7 @@ package() {
 		_containsSource=true
 	fi
 	
-	if !_containsSource
+	if [ ! _containsSource ]
 	    then
 		echo "====> Cloning the repo (this can take a while)..."
 
