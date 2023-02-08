@@ -227,7 +227,7 @@ const requestListener = (request, response) => {
                         console.log("[ SERVER ] Launching '" + command + args + "' on platform '" + platform + "'");
                         exec(command + args, {
                             cwd: __dirname
-                        } (error, stdout, stderr) => {
+                        }, (error, stdout, stderr) => {
                             if(error) {
                                 console.log(stderr);
                             }
